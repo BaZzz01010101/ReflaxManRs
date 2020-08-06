@@ -1,0 +1,9 @@
+[package]
+name = "reflax_man_rs"
+version = "0.1.0"
+authors = ["BaZzz01010101 <andy2002ua@gmail.com>"]
+edition = "2018"
+build = "build.rs"
+
+[dependencies]
+sdl2 = "0.34.0"
