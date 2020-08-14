@@ -1,0 +1,1 @@
+pub const VERY_SMALL_NUMBER: f32 = 1.08420217e-15;
