@@ -22,6 +22,19 @@ pub struct Matrix33 {
 }
 
 impl Matrix33 {
+  pub fn from_yaw_pitch(yaw: f32, pitch: f32) -> Matrix33 {
+    let yaw_sin = yaw.sin();
+    let yaw_cos = yaw.cos();
+    let pitch_sin = pitch.sin();
+    let pitch_cos = pitch.cos();
+
+    let ref front = Vector3::from(yaw_sin * pitch_cos, pitch_sin, yaw_cos * pitch_cos);
+    let ref right = Vector3::from(0.0, 1.0, 0.0) % front;
+    let ref up = front % right;
+
+    Matrix33::from([&right.normalized(), &up.normalized(), &front.normalized()])
+  }
+
   pub fn iter(&self) -> Flatten<Iter<'_, [f32; 3]>> {
     self.el.iter().flatten()
   }
@@ -137,12 +150,6 @@ impl From<[&Vector3; 3]> for Matrix33 {
         [va[0].z, va[1].z, va[2].z],
       ],
     }
-  }
-}
-
-impl From<&Matrix33> for Matrix33 {
-  fn from(m: &Matrix33) -> Matrix33 {
-    m.clone()
   }
 }
 
