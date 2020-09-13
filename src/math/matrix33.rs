@@ -3,8 +3,7 @@ use std::ops::{
   Sub, SubAssign,
   Mul, MulAssign,
   Div, DivAssign,
-  Rem, RemAssign,
-  Neg, DerefMut,
+  Neg,
 };
 
 use std::cmp::{PartialEq};
@@ -20,6 +19,81 @@ use std::iter::{IntoIterator, FromIterator, Flatten};
 #[derive(Debug, Default, Clone)]
 pub struct Matrix33 {
   el: [[f32; 3]; 3]
+}
+
+impl Matrix33 {
+  pub fn iter(&self) -> Flatten<Iter<'_, [f32; 3]>> {
+    self.el.iter().flatten()
+  }
+
+  pub fn iter_mut(&mut self) -> Flatten<IterMut<'_, [f32; 3]>> {
+    self.el.iter_mut().flatten()
+  }
+
+  pub fn det(&self) -> f32 {
+    let m = self;
+
+    m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) +
+      m[1][0] * (m[2][1] * m[0][2] - m[0][1] * m[2][2]) +
+      m[2][0] * (m[0][1] * m[1][2] - m[0][2] * m[1][1])
+  }
+
+  pub fn inverted(&self) -> Matrix33 {
+    let d = self.det();
+    let m = self;
+    assert!(d.abs() > VERY_SMALL_NUMBER);
+
+    Matrix33 {
+      el: [
+        [
+          (m[1][1] * m[2][2] - m[1][2] * m[2][1]) / d,
+          (m[0][2] * m[2][1] - m[0][1] * m[2][2]) / d,
+          (m[0][1] * m[1][2] - m[0][2] * m[1][1]) / d,
+        ],
+        [
+          (m[1][2] * m[2][0] - m[1][0] * m[2][2]) / d,
+          (m[0][0] * m[2][2] - m[0][2] * m[2][0]) / d,
+          (m[0][2] * m[1][0] - m[0][0] * m[1][2]) / d,
+        ],
+        [
+          (m[1][0] * m[2][1] - m[1][1] * m[2][0]) / d,
+          (m[0][1] * m[2][0] - m[0][0] * m[2][1]) / d,
+          (m[0][0] * m[1][1] - m[0][1] * m[1][0]) / d,
+        ],
+      ]
+    }
+  }
+
+  pub fn invert(&mut self) {
+    let d = self.det();
+    assert!(d.abs() > VERY_SMALL_NUMBER);
+    *self = self.inverted();
+  }
+
+  pub fn transposed(&self) -> Matrix33 {
+    let m = self;
+    Matrix33 {
+      el: [
+        [m[0][0], m[1][0], m[2][0]],
+        [m[0][1], m[1][1], m[2][1]],
+        [m[0][2], m[1][2], m[2][2]],
+      ]
+    }
+  }
+
+  pub fn transpose(&mut self) {
+    *self = self.transposed();
+  }
+
+  pub fn get_col(&self, col: usize) -> Vector3 {
+    Vector3::from(self[0][col], self[1][col], self[2][col])
+  }
+
+  pub fn set_col(&mut self, col: usize, v: &Vector3) {
+    self[0][col] = v.x;
+    self[1][col] = v.y;
+    self[2][col] = v.z;
+  }
 }
 
 impl fmt::Display for Matrix33 {
@@ -265,81 +339,6 @@ impl Neg for &Matrix33 {
     }
 
     m
-  }
-}
-
-impl Matrix33 {
-  pub fn iter(&self) -> Flatten<Iter<'_, [f32; 3]>> {
-    self.el.iter().flatten()
-  }
-
-  pub fn iter_mut(&mut self) -> Flatten<IterMut<'_, [f32; 3]>> {
-    self.el.iter_mut().flatten()
-  }
-
-  pub fn det(&self) -> f32 {
-    let m = self;
-
-    m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) +
-      m[1][0] * (m[2][1] * m[0][2] - m[0][1] * m[2][2]) +
-      m[2][0] * (m[0][1] * m[1][2] - m[0][2] * m[1][1])
-  }
-
-  pub fn inverted(&self) -> Matrix33 {
-    let d = self.det();
-    let m = self;
-    assert!(d.abs() > VERY_SMALL_NUMBER);
-
-    Matrix33 {
-      el: [
-        [
-          (m[1][1] * m[2][2] - m[1][2] * m[2][1]) / d,
-          (m[0][2] * m[2][1] - m[0][1] * m[2][2]) / d,
-          (m[0][1] * m[1][2] - m[0][2] * m[1][1]) / d,
-        ],
-        [
-          (m[1][2] * m[2][0] - m[1][0] * m[2][2]) / d,
-          (m[0][0] * m[2][2] - m[0][2] * m[2][0]) / d,
-          (m[0][2] * m[1][0] - m[0][0] * m[1][2]) / d,
-        ],
-        [
-          (m[1][0] * m[2][1] - m[1][1] * m[2][0]) / d,
-          (m[0][1] * m[2][0] - m[0][0] * m[2][1]) / d,
-          (m[0][0] * m[1][1] - m[0][1] * m[1][0]) / d,
-        ],
-      ]
-    }
-  }
-
-  pub fn invert(&mut self) {
-    let d = self.det();
-    assert!(d.abs() > VERY_SMALL_NUMBER);
-    *self = self.inverted();
-  }
-
-  pub fn transposed(&self) -> Matrix33 {
-    let m = self;
-    Matrix33 {
-      el: [
-        [m[0][0], m[1][0], m[2][0]],
-        [m[0][1], m[1][1], m[2][1]],
-        [m[0][2], m[1][2], m[2][2]],
-      ]
-    }
-  }
-
-  pub fn transpose(&mut self) {
-    *self = self.transposed();
-  }
-
-  pub fn get_col(&self, col: usize) -> Vector3 {
-    Vector3::from(self[0][col], self[1][col], self[2][col])
-  }
-
-  pub fn set_col(&mut self, col: usize, v: &Vector3) {
-    self[0][col] = v.x;
-    self[1][col] = v.y;
-    self[2][col] = v.z;
   }
 }
 
