@@ -10,13 +10,15 @@ use std::ops::{
 use std::marker::Sized;
 use std::cmp::{PartialEq};
 use std::fmt;
+use std::iter::{IntoIterator, FromIterator};
 
 use super::constants::VERY_SMALL_NUMBER;
 
+#[derive(Debug, Default, Clone)]
 pub struct Vector3 {
-  x: f32,
-  y: f32,
-  z: f32,
+  pub x: f32,
+  pub y: f32,
+  pub z: f32,
 }
 
 impl Vector3 {
@@ -36,13 +38,6 @@ impl Vector3 {
     self.x + self.y + self.z
   }
 
-  pub fn normalize(&mut self) {
-    let length = self.length();
-    assert!(length > VERY_SMALL_NUMBER, "Vector length too small: {}", self);
-
-    *self /= length;
-  }
-
   pub fn normalized(&self) -> Vector3 {
     let length = self.length();
     assert!(length > VERY_SMALL_NUMBER, "Vector length too small: {}", self);
@@ -50,10 +45,9 @@ impl Vector3 {
     self / length
   }
 
-  pub fn reflect(&mut self, norm: &Vector3) {
-    let a = norm * norm;
-    assert!(a > VERY_SMALL_NUMBER, "Value too small: {}", a);
-    *self = 2.0 * (&*self - (&*self * norm / a) * norm) - &*self;
+  #[inline]
+  pub fn normalize(&mut self) {
+    *self = self.normalized();
   }
 
   pub fn reflected(&self, norm: &Vector3) -> Vector3 {
@@ -62,11 +56,34 @@ impl Vector3 {
 
     2.0 * (self - (self * norm / a) * norm) - self
   }
+
+  #[inline]
+  pub fn reflect(&mut self, norm: &Vector3) {
+    *self = self.reflected(norm);
+  }
 }
 
 impl fmt::Display for Vector3 {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(f, "({}, {}, {})", self.x, self.y, self.z)
+  }
+}
+
+impl<'a> FromIterator<&'a f32> for Vector3 {
+  fn from_iter<I: IntoIterator<Item=&'a f32>>(iter: I) -> Vector3 {
+    iter.into_iter().map(|el|{*el}).collect()
+  }
+}
+
+impl FromIterator<f32> for Vector3 {
+  fn from_iter<I: IntoIterator<Item=f32>>(iter: I) -> Vector3 {
+    let mut v = Vector3::default();
+    let mut it = iter.into_iter();
+    v.x = it.next().unwrap();
+    v.y = it.next().unwrap();
+    v.z = it.next().unwrap();
+
+    v
   }
 }
 
