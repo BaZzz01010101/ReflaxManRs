@@ -5,6 +5,8 @@ use sdl2::event::{Event, WindowEvent};
 use sdl2::keyboard::Keycode;
 use core::convert::From;
 
+mod math;
+
 fn main() {
   let mut width: u32 = 800;
   let mut height: u32 = 600;
