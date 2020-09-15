@@ -9,6 +9,7 @@ use core::convert::From;
 mod macros;
 
 mod math;
+mod render;
 
 fn main() {
   let mut width: u32 = 800;
