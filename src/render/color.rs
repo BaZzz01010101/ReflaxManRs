@@ -29,6 +29,14 @@ impl Color {
     self.g = clamp(self.g, 0.0, 1.0);
     self.b = clamp(self.b, 0.0, 1.0);
   }
+
+  pub fn rgb(&self) -> [u8; 3] {
+    [
+      (self.r * 255.999) as u8,
+      (self.g * 255.999) as u8,
+      (self.b * 255.999) as u8,
+    ]
+  }
 }
 
 impl fmt::Display for Color {
@@ -92,7 +100,7 @@ impl Mul<&Color> for &Color {
     Color {
       r: self.r * other.r,
       g: self.g * other.g,
-      b: self.b * other.b
+      b: self.b * other.b,
     }
   }
 }

@@ -70,3 +70,9 @@ fn clamp() {
   c.clamp();
   assert_eq!(c, Color::from(1.0, 0.0, 0.75));
 }
+
+#[test]
+fn rgb() {
+  assert_eq!(Color::from(0.0, 0.5, 1.0).rgb(), [0, 127, 255]);
+  assert_eq!(Color::from(1.01, 2.0, -0.5).rgb(), [255, 255, 0]);
+}
