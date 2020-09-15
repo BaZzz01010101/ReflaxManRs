@@ -1,13 +1,10 @@
-#[macro_use]
-mod macros;
-
-mod constants;
-
 mod vector3;
 mod matrix33;
 mod clamp;
 
 mod tests;
+
+pub mod constants;
 
 pub use self::vector3::Vector3;
 pub use self::matrix33::Matrix33;

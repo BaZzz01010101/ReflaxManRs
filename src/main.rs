@@ -5,6 +5,9 @@ use sdl2::event::{Event, WindowEvent};
 use sdl2::keyboard::Keycode;
 use core::convert::From;
 
+#[macro_use]
+mod macros;
+
 mod math;
 
 fn main() {
