@@ -2,6 +2,18 @@
 use super::super::Vector3;
 
 #[test]
+fn length() {
+  let v = Vector3::from(2.0, -4.0, 4.0);
+  assert_eq!(v.length(), 6.0);
+}
+
+#[test]
+fn sq_length() {
+  let v = Vector3::from(2.0, -4.0, 4.0);
+  assert_eq!(v.sq_length(), 36.0);
+}
+
+#[test]
 fn add() {
   let v1 = Vector3::from(1.0, -2.0, 3.0);
   let v2 = Vector3::from(3.0, 2.0, -1.0);

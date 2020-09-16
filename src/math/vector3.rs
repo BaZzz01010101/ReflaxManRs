@@ -26,11 +26,11 @@ impl Vector3 {
   }
 
   pub fn length(&self) -> f32 {
-    (self.x + self.y + self.z).sqrt()
+    (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
   }
 
   pub fn sq_length(&self) -> f32 {
-    self.x + self.y + self.z
+    self.x * self.x + self.y * self.y + self.z * self.z
   }
 
   pub fn normalized(&self) -> Vector3 {
@@ -66,7 +66,7 @@ impl fmt::Display for Vector3 {
 
 impl<'a> FromIterator<&'a f32> for Vector3 {
   fn from_iter<I: IntoIterator<Item=&'a f32>>(iter: I) -> Vector3 {
-    iter.into_iter().map(|el|{*el}).collect()
+    iter.into_iter().map(|el| { *el }).collect()
   }
 }
 
@@ -112,7 +112,7 @@ impl Sub<&Vector3> for &Vector3 {
   }
 }
 
-impl Mul<&Vector3> for &Vector3{
+impl Mul<&Vector3> for &Vector3 {
   type Output = f32;
 
   fn mul(self, other: &Vector3) -> f32 {
