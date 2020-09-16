@@ -16,7 +16,7 @@ use super::Vector3;
 use std::slice::{Iter, IterMut};
 use std::iter::{IntoIterator, FromIterator, Flatten};
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Matrix33 {
   el: [[f32; 3]; 3]
 }
@@ -181,12 +181,6 @@ impl FromIterator<f32> for Matrix33 {
     }
 
     m
-  }
-}
-
-impl PartialEq for Matrix33 {
-  fn eq(&self, other: &Matrix33) -> bool {
-    self.el == other.el
   }
 }
 

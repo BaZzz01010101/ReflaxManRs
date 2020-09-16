@@ -1,12 +1,12 @@
 use super::Color;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Kind {
   Metal,
   Dielectric,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Material {
   pub kind: Kind,
   pub color: Color,
@@ -20,7 +20,7 @@ impl Material {
       kind,
       color,
       reflectivity,
-      transparency
+      transparency,
     }
   }
 }

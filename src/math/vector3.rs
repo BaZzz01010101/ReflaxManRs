@@ -13,7 +13,7 @@ use std::iter::{IntoIterator, FromIterator};
 
 use super::constants::VERY_SMALL_NUMBER;
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Vector3 {
   pub x: f32,
   pub y: f32,
@@ -209,18 +209,6 @@ impl Neg for &Vector3 {
       y: -self.y,
       z: -self.z,
     }
-  }
-}
-
-impl PartialEq for Vector3 {
-  fn eq(&self, other: &Vector3) -> bool {
-    self.x == other.x && self.y == other.y && self.z == other.z
-  }
-}
-
-impl PartialEq<Vector3> for &mut Vector3 {
-  fn eq(&self, other: &Vector3) -> bool {
-    self.x == other.x && self.y == other.y && self.z == other.z
   }
 }
 

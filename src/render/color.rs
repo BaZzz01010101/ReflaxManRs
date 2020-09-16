@@ -11,7 +11,7 @@ use std::iter::{IntoIterator, FromIterator};
 
 use crate::math::clamp;
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Color {
   pub r: f32,
   pub g: f32,
@@ -170,18 +170,6 @@ impl DivAssign<&f32> for &mut Color {
   #[inline]
   fn div_assign(&mut self, other: &f32) {
     **self = &**self / other;
-  }
-}
-
-impl PartialEq for Color {
-  fn eq(&self, other: &Color) -> bool {
-    self.r == other.r && self.g == other.g && self.b == other.b
-  }
-}
-
-impl PartialEq<Color> for &mut Color {
-  fn eq(&self, other: &Color) -> bool {
-    self.r == other.r && self.g == other.g && self.b == other.b
   }
 }
 
