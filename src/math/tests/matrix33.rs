@@ -47,16 +47,16 @@ fn transpose() {
 #[test]
 fn get_col() {
   let m = Matrix33::from([1.0, 3.0, 1.5, 2.1, 5.0, 11.0, 5.2, 6.1, 9.9]);
-  assert_eq!(m.get_col(0), Vector3::from(1.0, 2.1, 5.2));
-  assert_eq!(m.get_col(1), Vector3::from(3.0, 5., 6.1));
-  assert_eq!(m.get_col(2), Vector3::from(1.5, 11.0, 9.9));
+  assert_eq!(m.get_col(0), Vector3::new(1.0, 2.1, 5.2));
+  assert_eq!(m.get_col(1), Vector3::new(3.0, 5., 6.1));
+  assert_eq!(m.get_col(2), Vector3::new(1.5, 11.0, 9.9));
 }
 
 #[test]
 fn set_col() {
   let mut m = Matrix33::from([1.0, 3.0, 1.5, 2.1, 5.0, 11.0, 5.2, 6.1, 9.9]);
-  m.set_col(0, &Vector3::from(0.1, 0.2, 0.3));
-  assert_eq!(m.get_col(0), Vector3::from(0.1, 0.2, 0.3));
+  m.set_col(0, &Vector3::new(0.1, 0.2, 0.3));
+  assert_eq!(m.get_col(0), Vector3::new(0.1, 0.2, 0.3));
 }
 
 #[test]
@@ -95,8 +95,8 @@ fn mul_matrix() {
 #[test]
 fn mul_vector() {
   let mut m = Matrix33::from([1.0, 3.0, -2.0, 2.0, -5.0, 11.0, 5.0, 6.0, 9.0]);
-  let mut v = Vector3::from(2.0, 6.0, 3.0);
-  let expected = Vector3::from(14.0, 7.0, 73.0);
+  let mut v = Vector3::new(2.0, 6.0, 3.0);
+  let expected = Vector3::new(14.0, 7.0, 73.0);
   assert_eq!(&mut m * &v, expected);
   assert_eq!(&mut m * &mut v, expected);
   assert_eq!(&mut m * v.clone(), expected);

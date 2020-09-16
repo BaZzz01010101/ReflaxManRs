@@ -28,8 +28,8 @@ impl Matrix33 {
     let pitch_sin = pitch.sin();
     let pitch_cos = pitch.cos();
 
-    let ref front = Vector3::from(yaw_sin * pitch_cos, pitch_sin, yaw_cos * pitch_cos);
-    let ref right = Vector3::from(0.0, 1.0, 0.0) % front;
+    let ref front = Vector3::new(yaw_sin * pitch_cos, pitch_sin, yaw_cos * pitch_cos);
+    let ref right = Vector3::new(0.0, 1.0, 0.0) % front;
     let ref up = front % right;
 
     Matrix33::from([&right.normalized(), &up.normalized(), &front.normalized()])
@@ -99,7 +99,7 @@ impl Matrix33 {
   }
 
   pub fn get_col(&self, col: usize) -> Vector3 {
-    Vector3::from(self[0][col], self[1][col], self[2][col])
+    Vector3::new(self[0][col], self[1][col], self[2][col])
   }
 
   pub fn set_col(&mut self, col: usize, v: &Vector3) {
