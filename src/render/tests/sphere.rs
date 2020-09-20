@@ -17,7 +17,7 @@ fn trace() {
   let material = Material::new(MaterialKind::Metal, color, 1.0, 0.0);
   let m = material.clone();
   let sphere_center = Vector3::new(0.0, 0.0, 0.0);
-  let mut sphere = Sphere::new(sphere_center, 1.0, material.clone());
+  let sphere = Sphere::new(sphere_center, 1.0, material.clone());
 
   let mut out_drop = Vector3::default();
   let mut out_norm = Vector3::default();

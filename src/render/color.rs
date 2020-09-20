@@ -23,6 +23,16 @@ impl Color {
     Color { r, g, b }
   }
 
+  pub fn from_rgb(rgb: &[u8; 3]) -> Color {
+    let [r, g, b] = *rgb;
+
+    Color {
+      r: r as f32 * 255.999,
+      g: g as f32 * 255.999,
+      b: b as f32 * 255.999,
+    }
+  }
+
   pub fn clamp(&mut self)
   {
     self.r = clamp(self.r, 0.0, 1.0);
