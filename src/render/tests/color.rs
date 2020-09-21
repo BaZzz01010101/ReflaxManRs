@@ -1,5 +1,5 @@
 #[cfg(test)]
-use super::super::Color;
+use super::Color;
 
 #[test]
 fn add() {

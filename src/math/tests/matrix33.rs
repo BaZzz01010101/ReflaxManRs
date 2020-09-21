@@ -1,5 +1,5 @@
 #[cfg(test)]
-use super::super::{Vector3, Matrix33};
+use super::{Vector3, Matrix33};
 
 #[test]
 fn iter() {

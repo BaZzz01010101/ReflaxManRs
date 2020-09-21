@@ -1,6 +1,6 @@
-use crate::math::Vector3;
-use crate::render::{Material, Trace};
-use crate::math::constants::{VERY_SMALL_NUMBER, DELTA};
+use super::math::Vector3;
+use super::math::constants::{VERY_SMALL_NUMBER, DELTA};
+use super::{Material, Trace};
 
 pub struct Sphere {
   pub center: Vector3,

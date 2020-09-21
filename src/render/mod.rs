@@ -7,6 +7,8 @@ mod skybox;
 
 mod tests;
 
+use crate::math;
+
 pub use self::color::Color;
 pub use self::material::Material;
 pub use self::material::Kind as MaterialKind;

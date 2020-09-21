@@ -1,5 +1,5 @@
-use crate::math::Vector3;
-use crate::render::Material;
+use super::math::Vector3;
+use super::Material;
 
 pub trait Trace {
   fn trace<'a>(

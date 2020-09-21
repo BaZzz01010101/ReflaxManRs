@@ -1,6 +1,7 @@
 #[cfg(test)]
 use std::io::Cursor;
-use super::super::{Color, Texture};
+
+use super::{Color, Texture};
 
 const TEX_24_BPP: &[u8] = include_bytes!("res/tex_16x16_24_bpp.tga");
 const TEX_32_BPP: &[u8] = include_bytes!("res/tex_16x16_32_bpp.tga");

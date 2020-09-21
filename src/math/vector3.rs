@@ -8,8 +8,8 @@ use std::ops::{
 };
 
 use std::cmp::{PartialEq};
-use std::fmt;
 use std::iter::{IntoIterator, FromIterator};
+use std::fmt;
 
 use super::constants::VERY_SMALL_NUMBER;
 

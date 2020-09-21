@@ -1,8 +1,8 @@
 #[cfg(test)]
 use std::io::Cursor;
 
-use crate::math::Vector3;
-use super::super::{Color, Texture, Skybox};
+use super::math::Vector3;
+use super::{Color, Texture, Skybox};
 
 const SKYBOX_24_BPP: &[u8] = include_bytes!("res/skybox_32x24_24_bpp.tga");
 

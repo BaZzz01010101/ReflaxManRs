@@ -9,7 +9,7 @@ use std::cmp::{PartialEq};
 use std::fmt;
 use std::iter::{IntoIterator, FromIterator};
 
-use crate::math::clamp;
+use super::math::clamp;
 
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct Color {

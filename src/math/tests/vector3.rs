@@ -1,5 +1,5 @@
 #[cfg(test)]
-use super::super::Vector3;
+use super::Vector3;
 
 #[test]
 fn length() {

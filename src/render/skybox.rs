@@ -1,8 +1,7 @@
 use anyhow::{Result};
 
-use crate::math::Vector3;
-use crate::math::constants::VERY_SMALL_NUMBER;
-
+use super::math::Vector3;
+use super::math::constants::VERY_SMALL_NUMBER;
 use super::{Color, Texture};
 
 pub struct Skybox {

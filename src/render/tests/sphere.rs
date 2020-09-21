@@ -1,15 +1,14 @@
 #[cfg(test)]
 
-use crate::math::Vector3;
+use super::math::Vector3;
 
-use super::super::{
+use super::{
   Color,
   MaterialKind,
   Material,
   Sphere,
+  Trace,
 };
-
-use crate::render::Trace;
 
 #[test]
 fn trace() {

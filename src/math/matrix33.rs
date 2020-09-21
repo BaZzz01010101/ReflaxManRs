@@ -8,13 +8,13 @@ use std::ops::{
 
 use std::cmp::{PartialEq};
 use std::ops::{Index, IndexMut};
+use std::slice::{Iter, IterMut};
+use std::iter::{IntoIterator, FromIterator, Flatten};
 use std::convert::{From};
 use std::fmt;
 
 use super::constants::VERY_SMALL_NUMBER;
 use super::Vector3;
-use std::slice::{Iter, IterMut};
-use std::iter::{IntoIterator, FromIterator, Flatten};
 
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct Matrix33 {

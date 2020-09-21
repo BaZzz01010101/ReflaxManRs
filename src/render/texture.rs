@@ -6,8 +6,8 @@ use std::convert::TryInto;
 use anyhow::{Result, Error, Context};
 use byteorder::{ReadBytesExt, LittleEndian};
 
-use crate::math::clamp;
-use crate::render::Color;
+use super::math::clamp;
+use super::Color;
 
 #[derive(Default)]
 struct TGAFileHeader
