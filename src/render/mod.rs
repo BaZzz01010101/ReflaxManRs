@@ -4,6 +4,7 @@ mod trace;
 mod sphere;
 mod texture;
 mod skybox;
+mod spotlight;
 
 mod tests;
 
