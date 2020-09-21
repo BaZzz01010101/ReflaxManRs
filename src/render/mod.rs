@@ -3,6 +3,7 @@ mod material;
 mod trace;
 mod sphere;
 mod texture;
+mod skybox;
 
 mod tests;
 
@@ -12,3 +13,4 @@ pub use self::material::Kind as MaterialKind;
 pub use self::trace::Trace;
 pub use self::sphere::Sphere;
 pub use self::texture::Texture;
+pub use self::skybox::Skybox;
