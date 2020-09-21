@@ -1,9 +1,13 @@
 use std::path::Path;
 use std::fs::File;
 use std::io::{Read, BufReader, Seek, SeekFrom};
+use std::convert::TryInto;
+
 use anyhow::{Result, Error, Context};
 use byteorder::{ReadBytesExt, LittleEndian};
-use std::convert::TryInto;
+
+use crate::math::clamp;
+use crate::render::Color;
 
 #[derive(Default)]
 struct TGAFileHeader
@@ -30,33 +34,36 @@ pub struct Texture {
 
 impl Texture {
   pub fn load_from_file(path: &Path) -> Result<Texture> {
-    let extension = path.extension().ok_or(Error::msg("File has no extension"))?;
-    let extension = extension.to_str().ok_or(Error::msg("File extension is not valid UTF8 string"))?;
+    let extension = path
+      .extension().ok_or(Error::msg("File has no extension"))?
+      .to_str().ok_or(Error::msg("Invalid file extension"))?;
 
     match extension {
       // ".bmp" => Texture::load_from_bmp_file(path),
-      "tga" => Texture::load_from_tga_file(path),
+      "tga" => {
+        let file = File::open(path)?;
+        let stream = BufReader::new(file);
+
+        Texture::from_tga(stream)
+      }
       _ => Result::Err(Error::msg("File not supported")),
     }
   }
 
-  fn load_from_tga_file(path: &Path) -> Result<Texture> {
-    let file = File::open(path)?;
-    let mut buf_reader = BufReader::new(file);
-
+  pub(in super) fn from_tga(mut stream: impl Read + Seek) -> Result<Texture> {
     let header = TGAFileHeader {
-      ident_size: buf_reader.read_i8()?,
-      color_map_type: buf_reader.read_i8()?,
-      image_type: buf_reader.read_i8()?,
-      _color_map_origin: buf_reader.read_i16::<LittleEndian>()?,
-      _color_map_length: buf_reader.read_i16::<LittleEndian>()?,
-      _color_map_bits_per_entry: buf_reader.read_i8()?,
-      x_offset: buf_reader.read_i16::<LittleEndian>()?,
-      y_offset: buf_reader.read_i16::<LittleEndian>()?,
-      x_size: buf_reader.read_i16::<LittleEndian>()?,
-      y_size: buf_reader.read_i16::<LittleEndian>()?,
-      bits_per_pixel: buf_reader.read_i8()?,
-      image_descriptor: buf_reader.read_i8()?,
+      ident_size: stream.read_i8()?,
+      color_map_type: stream.read_i8()?,
+      image_type: stream.read_i8()?,
+      _color_map_origin: stream.read_i16::<LittleEndian>()?,
+      _color_map_length: stream.read_i16::<LittleEndian>()?,
+      _color_map_bits_per_entry: stream.read_i8()?,
+      x_offset: stream.read_i16::<LittleEndian>()?,
+      y_offset: stream.read_i16::<LittleEndian>()?,
+      x_size: stream.read_i16::<LittleEndian>()?,
+      y_size: stream.read_i16::<LittleEndian>()?,
+      bits_per_pixel: stream.read_i8()?,
+      image_descriptor: stream.read_i8()?,
     };
 
     if header.color_map_type != 0 {
@@ -85,7 +92,7 @@ impl Texture {
     let color_buffer_offset = header.ident_size as i64 +
       header._color_map_length as i64 * header._color_map_bits_per_entry as i64 / 8;
 
-    buf_reader.seek(SeekFrom::Current(color_buffer_offset))
+    stream.seek(SeekFrom::Current(color_buffer_offset))
       .context("Failed to find pixels data. The file is possibly corrupted.")?;
 
     let pixel_count = width as i32 * height as i32;
@@ -93,7 +100,7 @@ impl Texture {
     let image_color_buffer_size = pixel_count as usize * header.bits_per_pixel as usize / 8;
     let mut image_color_buffer: Vec<u8> = vec![0u8; image_color_buffer_size];
 
-    buf_reader.read_exact(image_color_buffer.as_mut_slice())
+    stream.read_exact(image_color_buffer.as_mut_slice())
       .context("Failed to load pixels data. The file is possibly corrupted.")?;
 
     let texture_color_buffer_size = pixel_count as usize * 3;
@@ -124,21 +131,56 @@ impl Texture {
     })
   }
 
-  pub fn get_rgb_pixel(&self, x: u32, y: u32) -> Result<&[u8; 3]> {
-    if x >= self.width || y >= self.height {
-      return Result::Err(Error::msg("Pixel position out of bounds"));
-    }
-
-    let first_byte = (x as usize + y as usize * self.width as usize) * 3;
-
-    Ok(self.color_buffer[first_byte..first_byte + 3].try_into()?)
-  }
-
   fn _save_to_bmp_file(&self, _path: &Path) -> Result<()> {
     Result::Err(Error::msg("Not implemented"))
   }
 
   fn _save_to_tga_file(&self, _path: &Path) -> Result<()> {
     Result::Err(Error::msg("Not implemented"))
+  }
+
+  pub fn get_pixel_color(&self, x: u32, y: u32) -> Result<Color> {
+    if x >= self.width || y >= self.height {
+      return Result::Err(Error::msg("Pixel position out of bounds"));
+    }
+
+    let index = (x + y * self.width) as usize * 3;
+    let rgb: [u8; 3] = self.color_buffer[index..index + 3].try_into()?;
+    let color = Color::from_rgb(&rgb);
+
+    Result::Ok(color)
+  }
+
+
+  pub fn get_texel_color(&self, u: f32, v: f32) -> Result<Color> {
+    const UPPER_BOUND: f32 = 1.0 - f32::EPSILON;
+
+    if u < 0.0 || u > UPPER_BOUND || v < 0.0 || v >= UPPER_BOUND {
+      return Result::Err(Error::msg("Texel position out of bounds"));
+    }
+
+    let fx = clamp(u, 0.0, UPPER_BOUND) * self.width as f32;
+    let fy = clamp(v, 0.0, UPPER_BOUND) * self.height as f32;
+    let x = fx as u32;
+    let y = fy as u32;
+
+    // bilinear filtering
+    let color = if x < self.width - 1 && y < self.height - 1 {
+      let color_00 = self.get_pixel_color(x, y)?;
+      let color_01 = self.get_pixel_color(x, y + 1)?;
+      let color_10 = self.get_pixel_color(x + 1, y)?;
+      let color_11 = self.get_pixel_color(x + 1, y + 1)?;
+
+      let x_fract = fx.fract();
+      let y_fract = fy.fract();
+      let x_fract_inv = 1.0 - x_fract;
+      let y_fract_inv = 1.0 - y_fract;
+
+      (color_00 * x_fract_inv + color_10 * x_fract) * y_fract_inv + (color_01 * x_fract_inv + color_11 * x_fract) * y_fract
+    } else {
+      self.get_pixel_color(x, y)?
+    };
+
+    Result::Ok(color)
   }
 }

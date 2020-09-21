@@ -27,9 +27,9 @@ impl Color {
     let [r, g, b] = *rgb;
 
     Color {
-      r: r as f32 * 255.999,
-      g: g as f32 * 255.999,
-      b: b as f32 * 255.999,
+      r: r as f32 / 255.0,
+      g: g as f32 / 255.0,
+      b: b as f32 / 255.0,
     }
   }
 
