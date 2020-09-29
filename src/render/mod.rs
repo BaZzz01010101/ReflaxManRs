@@ -5,6 +5,7 @@ mod sphere;
 mod texture;
 mod skybox;
 mod spotlight;
+mod camera;
 
 mod tests;
 
