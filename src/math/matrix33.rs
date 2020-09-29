@@ -35,6 +35,16 @@ impl Matrix33 {
     Matrix33::from([&right.normalized(), &up.normalized(), &front.normalized()])
   }
 
+  pub fn from_cols(col_0: &Vector3, col_1: &Vector3, col_2: &Vector3) -> Matrix33 {
+    Matrix33{
+      el: [
+        [col_0.x, col_1.x, col_2.x],
+        [col_0.y, col_1.y, col_2.y],
+        [col_0.z, col_1.z, col_2.z],
+      ]
+    }
+  }
+
   pub fn iter(&self) -> Flatten<Iter<'_, [f32; 3]>> {
     self.el.iter().flatten()
   }
