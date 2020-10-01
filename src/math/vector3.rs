@@ -11,6 +11,7 @@ use std::cmp::{PartialEq};
 use std::iter::{IntoIterator, FromIterator};
 use std::fmt;
 
+use super::ApproxEq;
 use super::constants::VERY_SMALL_NUMBER;
 
 #[derive(Debug, Default, Clone, PartialEq)]
@@ -209,6 +210,14 @@ impl Neg for &Vector3 {
       y: -self.y,
       z: -self.z,
     }
+  }
+}
+
+impl ApproxEq<&Vector3> for &Vector3 {
+  fn approx_eq(self, right: &Vector3, delta: f32) -> bool {
+    f32::abs(self.x - right.x) < delta &&
+      f32::abs(self.y - right.y) < delta &&
+      f32::abs(self.z - right.z) < delta
   }
 }
 
