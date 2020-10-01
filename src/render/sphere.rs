@@ -1,3 +1,5 @@
+use anyhow::{Result, Error, Context};
+
 use super::math::Vector3;
 use super::math::constants::{VERY_SMALL_NUMBER, DELTA};
 use super::{Material, Trace};
@@ -25,12 +27,12 @@ impl Trace for Sphere {
     &'a self,
     origin: &Vector3,
     ray: &Vector3,
-    out_drop: &mut Vector3,
-    out_norm: &mut Vector3,
-    out_reflected_ray: &mut Vector3,
-    out_distance: &mut f32,
-    out_drop_material: &mut &'a Material,
-  ) -> bool
+    out_drop: Option<&mut Vector3>,
+    out_norm: Option<&mut Vector3>,
+    out_reflected_ray: Option<&mut Vector3>,
+    out_distance: Option<&mut f32>,
+    out_drop_material: Option<&mut Material>,
+  ) -> Result<bool>
   {
     let vco = origin - &self.center;
     let a = ray.sq_length();
@@ -38,31 +40,53 @@ impl Trace for Sphere {
     let c = vco.sq_length() - self.sq_radius;
     let d = b * b - 4.0 * a * c;
 
-    if d >= 0.0 && a > VERY_SMALL_NUMBER
-    {
-      let t = (-b - d.sqrt()) / (2.0 * a);
 
-      if t > VERY_SMALL_NUMBER
-      {
-        let full_ray = ray * t;
-        let distance = full_ray.length();
-
-        if distance > DELTA
-        {
-          let drop = origin + &full_ray;
-          let norm = &drop - &self.center;
-
-          *out_distance = distance;
-          *out_drop = drop;
-          *out_norm = norm.clone();
-          *out_reflected_ray = full_ray.reflected(&norm);
-          *out_drop_material = &self.material;
-
-          return true;
-        }
-      }
+    if d < 0.0 {
+      return Ok(false);
     }
 
-    return false;
+    if a < VERY_SMALL_NUMBER {
+      return Ok(false);
+      //return Result::Err(Error::msg("Ray is too short"));
+    }
+
+    let t = (-b - d.sqrt()) / (2.0 * a);
+
+    if t < VERY_SMALL_NUMBER {
+      return Ok(false);
+      //return Result::Err(Error::msg("Invalid tracing conditions"));
+    }
+
+    let full_ray = ray * t;
+    let distance = full_ray.length();
+
+    if distance < DELTA {
+      return Ok(false);
+    }
+
+    let drop = origin + &full_ray;
+    let norm = &drop - &self.center;
+
+    if let Some(out_distance) = out_distance {
+      *out_distance = distance;
+    }
+
+    if let Some(out_drop) = out_drop {
+      *out_drop = drop;
+    }
+
+    if let Some(out_norm) = out_norm {
+      *out_norm = norm.clone();
+    }
+
+    if let Some(out_reflected_ray) = out_reflected_ray {
+      *out_reflected_ray = full_ray.reflected(&norm);
+    }
+
+    if let Some(out_drop_material) = out_drop_material {
+      *out_drop_material = self.material.clone();
+    }
+
+    Ok(true)
   }
 }

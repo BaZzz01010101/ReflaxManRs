@@ -1,3 +1,5 @@
+use anyhow::{Result, Error, Context};
+
 use super::math::Vector3;
 use super::Material;
 
@@ -6,10 +8,10 @@ pub trait Trace {
     &'a self,
     origin: &Vector3,
     ray: &Vector3,
-    out_drop: &mut Vector3,
-    out_norm: &mut Vector3,
-    out_reflected_ray: &mut Vector3,
-    out_distance: &mut f32,
-    out_drop_material: &mut &'a Material,
-  ) -> bool;
+    out_drop: Option<&mut Vector3>,
+    out_norm: Option<&mut Vector3>,
+    out_reflected_ray: Option<&mut Vector3>,
+    out_distance: Option<&mut f32>,
+    out_drop_material: Option<&mut Material>,
+  ) -> Result<bool>;
 }
