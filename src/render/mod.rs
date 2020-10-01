@@ -19,4 +19,5 @@ pub use self::trace::Trace;
 pub use self::sphere::Sphere;
 pub use self::texture::Texture;
 pub use self::skybox::Skybox;
+pub use self::spot_light::SpotLight;
 pub use self::triangle::Triangle;
