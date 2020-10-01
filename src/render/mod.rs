@@ -4,7 +4,7 @@ mod trace;
 mod sphere;
 mod texture;
 mod skybox;
-mod spotlight;
+mod spot_light;
 mod camera;
 mod triangle;
 
