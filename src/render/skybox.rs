@@ -11,7 +11,7 @@ pub struct Skybox {
 }
 
 impl Skybox {
-  pub fn from_texture(texture: Texture) -> Skybox {
+  pub fn new(texture: Texture) -> Skybox {
     Skybox {
       half_tile_width: 1.0 / 8.0 - /*1.0 / texture.width as f32 -*/ f32::EPSILON,
       half_tile_height: 1.0 / 6.0 - /*1.0 / texture.height as f32 -*/ f32::EPSILON,
