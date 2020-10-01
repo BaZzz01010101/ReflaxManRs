@@ -35,12 +35,17 @@ impl Matrix33 {
     Matrix33::from([&right.normalized(), &up.normalized(), &front.normalized()])
   }
 
-  pub fn from_cols(col_0: &Vector3, col_1: &Vector3, col_2: &Vector3) -> Matrix33 {
+  pub fn from_cols(
+    col_0: impl AsRef<Vector3>,
+    col_1: impl AsRef<Vector3>,
+    col_2: impl AsRef<Vector3>
+  ) -> Matrix33
+  {
     Matrix33{
       el: [
-        [col_0.x, col_1.x, col_2.x],
-        [col_0.y, col_1.y, col_2.y],
-        [col_0.z, col_1.z, col_2.z],
+        [col_0.as_ref().x, col_1.as_ref().x, col_2.as_ref().x],
+        [col_0.as_ref().y, col_1.as_ref().y, col_2.as_ref().y],
+        [col_0.as_ref().z, col_1.as_ref().z, col_2.as_ref().z],
       ]
     }
   }
