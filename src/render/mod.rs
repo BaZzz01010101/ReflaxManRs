@@ -6,6 +6,7 @@ mod texture;
 mod skybox;
 mod spotlight;
 mod camera;
+mod triangle;
 
 mod tests;
 
@@ -18,3 +19,4 @@ pub use self::trace::Trace;
 pub use self::sphere::Sphere;
 pub use self::texture::Texture;
 pub use self::skybox::Skybox;
+pub use self::triangle::Triangle;
