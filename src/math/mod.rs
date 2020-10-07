@@ -1,6 +1,7 @@
 mod vector3;
 mod matrix33;
 mod clamp;
+mod rnd;
 
 mod tests;
 
