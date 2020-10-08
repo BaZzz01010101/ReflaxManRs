@@ -1,3 +1,4 @@
+use std::rc::Rc;
 use std::f32::consts::{PI, FRAC_PI_2};
 
 use anyhow::{Result, Error, Context};
@@ -15,16 +16,13 @@ pub struct Triangle {
   tv: [f32; 3],
   material: Material,
   norm: Vector3,
-  texture: Option<Texture>,
+  texture: Option<Rc<Texture>>,
   ax_transform: Matrix33,
   tuv_transform: Matrix33,
 }
 
 impl Triangle {
-  pub fn new(
-    vertices: [&Vector3; 3],
-    material: Material,
-  ) -> Triangle
+  pub fn new(vertices: [&Vector3; 3], material: Material) -> Triangle
   {
     let ax = vertices[2] - vertices[0];
     let ay = vertices[1] - vertices[0];
@@ -49,17 +47,18 @@ impl Triangle {
   }
 
   pub fn set_texture(
-    &mut self, texture: Texture,
+    &mut self,
+    texture: Rc<Texture>,
     texture_u_points: [f32; 3],
-    texture_v_points: [f32;3])
+    texture_v_points: [f32; 3])
   {
-    self.texture = Some(texture);
+    self.texture = Some(Rc::clone(&texture));
 
     self.tu = texture_u_points;
     self.tv = texture_v_points;
-    let  v1 = Vector3::new(self.tu[0], self.tv[0], 0.0);
-    let  v2 = Vector3::new(self.tu[1], self.tv[1], 0.0);
-    let  v3 = Vector3::new(self.tu[2], self.tv[2], 0.0);
+    let v1 = Vector3::new(self.tu[0], self.tv[0], 0.0);
+    let v2 = Vector3::new(self.tu[1], self.tv[1], 0.0);
+    let v3 = Vector3::new(self.tu[2], self.tv[2], 0.0);
     self.tuv_transform = Matrix33::from_cols(&v3 - &v1, &v2 - &v1, Vector3::new(0.0, 0.0, -1.0));
   }
 }
