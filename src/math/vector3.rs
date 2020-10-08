@@ -1,18 +1,13 @@
-use std::ops::{
-  Add, AddAssign,
-  Sub, SubAssign,
-  Mul, MulAssign,
-  Div, DivAssign,
-  Rem, RemAssign,
-  Neg,
-};
+use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign, Div, DivAssign, Rem, RemAssign, Neg, DerefMut};
 
+use std::rc::Rc;
 use std::cmp::{PartialEq};
 use std::iter::{IntoIterator, FromIterator};
 use std::fmt;
 
 use super::ApproxEq;
-use super::constants::VERY_SMALL_NUMBER;
+use super::Rnd;
+use super::constants::{VERY_SMALL_NUMBER, FAST_RAND_MAX};
 
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct Vector3 {
@@ -21,9 +16,29 @@ pub struct Vector3 {
   pub z: f32,
 }
 
+  thread_local! {
+    pub static RND: Rc<Rnd> = Rc::new(Rnd::new());
+  }
+
 impl Vector3 {
   pub fn new(x: f32, y: f32, z: f32) -> Vector3 {
     Vector3 { x, y, z }
+  }
+
+  pub fn random_inside_sphere(radius: f32) -> Vector3 {
+    let rnd = RND.with(|r| Rc::clone(r));
+
+    loop {
+      let vec = Vector3::new(
+        rnd.fastrand() as f32 / (FAST_RAND_MAX as f32 / 2.0) - 1.0,
+        rnd.fastrand() as f32 / (FAST_RAND_MAX as f32 / 2.0) - 1.0,
+        rnd.fastrand() as f32 / (FAST_RAND_MAX as f32 / 2.0) - 1.0,
+      );
+
+      if vec.sq_length() <= 1.0 {
+        return vec * radius;
+      }
+    }
   }
 
   pub fn length(&self) -> f32 {

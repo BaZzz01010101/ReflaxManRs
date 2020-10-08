@@ -89,3 +89,18 @@ fn neg() {
   let v1 = Vector3::new(1.0, -2.0, 3.0);
   assert_eq!(-&v1, Vector3::new(-1.0, 2.0, -3.0));
 }
+
+#[test]
+fn random() {
+  for radius in 1..1000 {
+    let v = Vector3::random_inside_sphere(radius as f32);
+    assert!(v.length() <= radius as f32, "length > radius\n vector: {}\n length: {}\n radius: {}", v, v.length(), radius);
+    assert!(v.length() != 0.0, "length == 0\n vector: {}\n length: {}\n radius: {}", v, v.length(), radius);
+  }
+
+  for radius in 1..1000 {
+    let v1 = Vector3::random_inside_sphere(radius as f32);
+    let v2 = Vector3::random_inside_sphere(radius as f32);
+    assert_ne!(v1, v2);
+  }
+}
