@@ -2,11 +2,12 @@ use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 use std::time::{Instant};
 use std::num::Wrapping;
+use std::cell::RefCell;
 
-const FAST_RAND_MASK: i32 = 0x7FFF;
+use super::constants::FAST_RAND_MAX;
 
-struct Rnd {
-  g_seed: i32,
+pub struct Rnd {
+  g_seed: RefCell<i32>,
 }
 
 impl Rnd {
@@ -16,15 +17,17 @@ impl Rnd {
     std::thread::current().id().hash(&mut hasher);
     std::process::id().hash(&mut hasher);
     let hash = hasher.finish();
-    let seed = (hash ^ (hash >> 32)) as i32 & FAST_RAND_MASK;
+    let seed = (hash ^ (hash >> 32)) as i32 & FAST_RAND_MAX;
 
-    Rnd { g_seed: seed }
+    Rnd { g_seed: RefCell::new(seed) }
   }
 
   // generate pseudo-random numbers 0-32767
-  pub fn fastrand(&mut self) -> i32 {
-    self.g_seed = (Wrapping(214013) * Wrapping(self.g_seed) + Wrapping(2531011)).0;
+  pub fn fastrand(&self) -> i32 {
+    let seed = *self.g_seed.borrow();
+    let seed = (Wrapping(214013) * Wrapping(seed) + Wrapping(2531011)).0;
+    *self.g_seed.borrow_mut() = seed;
 
-    (self.g_seed >> 16) & FAST_RAND_MASK
+    (seed >> 16) & FAST_RAND_MAX
   }
 }
