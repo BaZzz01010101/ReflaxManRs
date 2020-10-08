@@ -22,7 +22,6 @@ impl Rnd {
     Rnd { g_seed: RefCell::new(seed) }
   }
 
-  // generate pseudo-random numbers 0-32767
   pub fn fastrand(&self) -> i32 {
     let seed = *self.g_seed.borrow();
     let seed = (Wrapping(214013) * Wrapping(seed) + Wrapping(2531011)).0;
