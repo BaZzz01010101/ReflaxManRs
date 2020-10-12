@@ -39,7 +39,6 @@ fn trace() {
 
   let trace_origin = Vector3::new(30.0, 30.0, 30.0);
   let trace_ray = Vector3::new(-1.0, -1.0, -1.0);
-
   let color = scene.trace(&trace_origin, &trace_ray, 10).unwrap();
 
   assert_eq!(color, Color::new(1.0, 1.0, 1.0), "color");

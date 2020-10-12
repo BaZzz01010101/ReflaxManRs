@@ -10,22 +10,22 @@ use std::rc::Rc;
 #[derive(Default)]
 pub struct Scene {
   skybox: Skybox,
-  envColor: Color,
+  skybox_color: Color,
   trace_objects: Vec<Box<dyn Trace>>,
   spot_lights: Vec<SpotLight>,
-  diffLightColor: Color,
-  diffLightPower: f32,
+  diff_light_color: Color,
+  diff_light_power: f32,
 }
 
 impl Scene {
   pub fn new(skybox: Skybox, diff_light_color: Color, diff_light_power: f32) -> Scene {
     Scene {
       skybox,
-      envColor: &diff_light_color * diff_light_power,
+      skybox_color: &diff_light_color * diff_light_power,
       trace_objects: Vec::new(),
       spot_lights: Vec::new(),
-      diffLightColor: diff_light_color,
-      diffLightPower: diff_light_power,
+      diff_light_color,
+      diff_light_power,
     }
   }
 
@@ -57,7 +57,7 @@ impl Scene {
     self.spot_lights.push(spot_light);
   }
 
-  pub fn trace(&self, origin: &Vector3, ray: &Vector3, max_reflections: usize) -> Result<Color> {
+  pub fn trace(&self, origin: &Vector3, ray: &Vector3, max_reflections: u32) -> Result<Color> {
     let mut origin = origin.clone();
     let mut ray = ray.clone();
     let random_vec = Vector3::random_inside_sphere(1.0);
@@ -184,7 +184,7 @@ impl Scene {
         let color = &drop_material.color;
         let kind = drop_material.kind;
 
-        sum_light_color = &self.diffLightColor * self.diffLightPower + sum_light_color;
+        sum_light_color = &self.diff_light_color * self.diff_light_power + sum_light_color;
 
         let mut fin_color: Color;
         if kind == MaterialKind::Dielectric {
@@ -230,7 +230,7 @@ impl Scene {
         ray = reflect.normalized() + &random_vec * (1.0 - reflectivity);
       } else {
         // no intersections, tracing skybox
-        output_color += &color_multiplier * self.skybox.trace(&ray)? * &self.envColor;
+        output_color += &color_multiplier * self.skybox.trace(&ray)? * &self.skybox_color;
         output_color.clamp();
         break;
       }

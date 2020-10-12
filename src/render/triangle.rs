@@ -29,7 +29,7 @@ impl Triangle {
     let ay = vertices[1] - vertices[0];
     let norm = (&ay % &ax).normalized();
     let ax_transform = Matrix33::from_cols(ax, ay, -&norm).inverted();
-    let mut tuv_transform = ax_transform.clone();
+    let tuv_transform = ax_transform.clone();
 
     Triangle {
       v: [
