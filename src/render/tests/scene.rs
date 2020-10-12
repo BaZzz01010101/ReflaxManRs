@@ -28,7 +28,7 @@ fn trace() {
   let skybox_texture = Texture::from_tga(skybox_texture_stream).unwrap();
   let skybox = Skybox::new(skybox_texture);
   let mut scene = Scene::new(skybox, Color::new(1.0, 1.0, 1.0), 0.0);
-  scene.add_spot_light(Vector3::new(100.0, 100.0, 100.0), 10.0, Color::new(1.0, 1.0, 1.0), 1.0);
+  scene.add_spot_light(Vector3::new(100.0, 100.0, 100.0), 10.0, Color::new(1.0, 1.0, 1.0), 10.0);
   scene.add_sphere(sphere_center, 1.0, material.clone());
 
   scene.add_triangle([
@@ -40,6 +40,10 @@ fn trace() {
   let trace_origin = Vector3::new(30.0, 30.0, 30.0);
   let trace_ray = Vector3::new(-1.0, -1.0, -1.0);
   let color = scene.trace(&trace_origin, &trace_ray, 10).unwrap();
+  assert_eq!(color, Color::new(1.0, 1.0, 1.0), "Hit color of triangle");
 
-  assert_eq!(color, Color::new(1.0, 1.0, 1.0), "color");
+  let trace_ray = Vector3::new(1.0, 1.0, 1.0);
+  let color = scene.trace(&trace_origin, &trace_ray, 10).unwrap();
+  assert_eq!(color, Color::new(0.0, 0.0, 0.0), "Hit color of skybox");
+
 }
