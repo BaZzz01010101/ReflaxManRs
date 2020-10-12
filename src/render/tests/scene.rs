@@ -24,18 +24,18 @@ fn trace() {
   let color = Color::new(1.0, 1.0, 1.0);
   let material = Material::new(MaterialKind::Dielectric, color, 0.5, 0.0);
   let sphere_center = Vector3::new(0.0, 0.0, 0.0);
-  let texture_stream = Cursor::new(SKYBOX_24_BPP);
-  let texture = Texture::from_tga(texture_stream).unwrap();
-  let skybox = Skybox::new(texture);
+  let skybox_texture_stream = Cursor::new(SKYBOX_24_BPP);
+  let skybox_texture = Texture::from_tga(skybox_texture_stream).unwrap();
+  let skybox = Skybox::new(skybox_texture);
   let mut scene = Scene::new(skybox, Color::new(1.0, 1.0, 1.0), 0.0);
-  scene.add_spot_light(Vector3::new(100.0,100.0,100.0), 10.0, Color::new(1.0, 1.0, 1.0), 1.0);
+  scene.add_spot_light(Vector3::new(100.0, 100.0, 100.0), 10.0, Color::new(1.0, 1.0, 1.0), 1.0);
   scene.add_sphere(sphere_center, 1.0, material.clone());
 
   scene.add_triangle([
     &Vector3::new(10.0, 0.0, 0.0),
     &Vector3::new(0.0, 10.0, 0.0),
     &Vector3::new(0.0, 0.0, 10.0),
-  ], material);
+  ], material, None);
 
   let trace_origin = Vector3::new(30.0, 30.0, 30.0);
   let trace_ray = Vector3::new(-1.0, -1.0, -1.0);

@@ -5,6 +5,7 @@ use anyhow::{Result, Error, Context};
 use super::math::{Vector3, Matrix33, clamp};
 use super::math::constants::{DELTA, VERY_SMALL_NUMBER};
 use super::{Skybox, SpotLight, Sphere, Triangle, Color, Texture, Material, MaterialKind, Trace};
+use std::rc::Rc;
 
 pub struct Scene {
   skybox: Skybox,
@@ -32,8 +33,21 @@ impl Scene {
     self.trace_objects.push(Box::new(sphere));
   }
 
-  pub fn add_triangle(&mut self, vertices: [&Vector3; 3], material: Material) {
-    let triangle = Triangle::new(vertices, material);
+  pub fn add_triangle(&mut self, vertices: [&Vector3; 3], material: Material,
+                      texture_data: Option<(Rc<Texture>, [(f32, f32); 3])>)
+  {
+    let mut triangle = Triangle::new(vertices, material);
+
+    if let Some((
+      texture, [
+      (u0, v0),
+      (u1, v1),
+      (u2, v2),
+      ])) = texture_data
+    {
+      triangle.set_texture(texture, [u0, u1, u2], [v0, v1, v2]);
+    }
+
     self.trace_objects.push(Box::new(triangle));
   }
 
