@@ -26,6 +26,7 @@ struct TGAFileHeader
   image_descriptor: i8,
 }
 
+#[derive(Debug, Default, Clone)]
 pub struct Texture {
   pub width: u32,
   pub height: u32,

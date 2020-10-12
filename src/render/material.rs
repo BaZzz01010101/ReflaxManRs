@@ -2,11 +2,18 @@ use super::Color;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Kind {
+  None,
   Metal,
   Dielectric,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+impl Default for Kind {
+  fn default() -> Kind {
+    Kind::None
+  }
+}
+
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Material {
   pub kind: Kind,
   pub color: Color,

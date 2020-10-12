@@ -7,6 +7,7 @@ use super::math::constants::{DELTA, VERY_SMALL_NUMBER};
 use super::{Skybox, SpotLight, Sphere, Triangle, Color, Texture, Material, MaterialKind, Trace};
 use std::rc::Rc;
 
+#[derive(Default)]
 pub struct Scene {
   skybox: Skybox,
   envColor: Color,

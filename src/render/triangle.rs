@@ -7,6 +7,7 @@ use super::math::{Vector3, Matrix33, clamp};
 use super::math::constants::{DELTA, VERY_SMALL_NUMBER};
 use super::{Trace, Texture, Material};
 
+#[derive(Default, Clone)]
 pub struct Triangle {
   // vertexes
   v: [Vector3; 3],

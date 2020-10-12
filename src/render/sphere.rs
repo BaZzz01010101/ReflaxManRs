@@ -4,6 +4,7 @@ use super::math::Vector3;
 use super::math::constants::{VERY_SMALL_NUMBER, DELTA};
 use super::{Material, Trace};
 
+#[derive(Debug, Default, Clone)]
 pub struct Sphere {
   pub center: Vector3,
   pub radius: f32,

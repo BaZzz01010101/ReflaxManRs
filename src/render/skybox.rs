@@ -4,6 +4,7 @@ use super::math::Vector3;
 use super::math::constants::VERY_SMALL_NUMBER;
 use super::{Color, Texture};
 
+#[derive(Debug, Default)]
 pub struct Skybox {
   half_tile_width: f32,
   half_tile_height: f32,

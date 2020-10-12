@@ -24,6 +24,7 @@ const SHIFT_DOWN_MASK: u32 = 1 << 9;
 const SHIFT_FORWARD_MASK: u32 = 1 << 10;
 const SHIFT_BACK_MASK: u32 = 1 << 11;
 
+#[derive(Debug, Default, Clone)]
 pub struct Camera {
   pub turn_rl_speed: f32,
   pub turn_ud_speed: f32,
