@@ -1,6 +1,11 @@
 #[cfg(test)]
 
+use std::f32::EPSILON;
+use std::io::Cursor;
+
+use super::math::ApproxEq;
 use super::math::Vector3;
+use super::Texture;
 
 use super::{
   Color,
@@ -34,11 +39,11 @@ fn trace() {
     Some(&mut out_reflected_ray),
     Some(&mut out_distance),
     Some(&mut out_drop_material)
-  );
+  ).unwrap();
 
   assert_eq!(out_drop, Vector3::new(0.0, 0.0, 1.0), "drop point");
   assert_eq!(out_norm.normalized(), Vector3::new(0.0, 0.0, 1.0), "drop point normal");
   assert_eq!(out_reflected_ray.normalized(), Vector3::new(0.0, 0.0, 1.0), "reflected ray");
-  assert_eq!(out_distance, 2.0, "distance");
+  assert!(out_distance.approx_eq(2.0, EPSILON), "distance\n left: {}\n right: {}", out_distance, 2.0);
   assert_eq!(out_drop_material, material, "material");
 }
