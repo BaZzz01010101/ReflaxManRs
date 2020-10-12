@@ -16,9 +16,9 @@ pub struct Vector3 {
   pub z: f32,
 }
 
-  thread_local! {
-    pub static RND: Rc<Rnd> = Rc::new(Rnd::new());
-  }
+thread_local! {
+  pub static RND: Rc<Rnd> = Rc::new(Rnd::new());
+}
 
 impl Vector3 {
   pub fn new(x: f32, y: f32, z: f32) -> Vector3 {
