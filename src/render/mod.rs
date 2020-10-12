@@ -7,6 +7,7 @@ mod skybox;
 mod spot_light;
 mod camera;
 mod triangle;
+mod scene;
 
 mod tests;
 
@@ -21,3 +22,4 @@ pub use self::texture::Texture;
 pub use self::skybox::Skybox;
 pub use self::spot_light::SpotLight;
 pub use self::triangle::Triangle;
+pub use self::scene::Scene;
