@@ -47,7 +47,7 @@ impl Camera {
     let ox = (up % &oz).normalized();
     let oy = (&oz % &ox).normalized();
 
-    let view = Matrix33::from_cols(&ox, &oy, &oy);
+    let view = Matrix33::from_cols(&ox, &oy, &oz);
     let mut yaw = ox.z.acos();
 
     if ox.x < 0.0 {
