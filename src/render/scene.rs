@@ -53,6 +53,7 @@ impl Scene {
   }
 
   pub fn add_spot_light(&mut self, origin: Vector3, radius: f32, color: Color, power: f32) {
+    self.skybox_color += &color * power;
     let spot_light = SpotLight::new(origin, radius, color, power);
     self.spot_lights.push(spot_light);
   }

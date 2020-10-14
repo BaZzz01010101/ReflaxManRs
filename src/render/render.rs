@@ -1,5 +1,5 @@
 use crate::math::{Matrix33, Vector3};
-use crate::render::{Camera, Scene, Color, Skybox, Texture, Material, MaterialKind};
+use crate::render::{Camera, Scene, Color, Skybox, Texture, Material, MaterialKind, Pulse};
 use std::path::Path;
 
 use anyhow::{Result, Error, Context};
@@ -34,7 +34,7 @@ pub struct Render {
 impl Render {
   pub fn new() -> Render {
     Render {
-      image: Vec::default(),
+      image: Vec::new(),
       cur_x: 0,
       cur_y: 0,
       max_reflections: 0,
@@ -51,10 +51,9 @@ impl Render {
     }
   }
 
-  pub fn init_scene(&mut self) -> Result<()> {
-    let exe_file_path = std::env::current_exe()?;
-    let skybox_texture_path = exe_file_path.join("textures/skybox.tga");
-    let periodic_texture_path = exe_file_path.join("textures/periodic.tga");
+  pub fn init_scene(&mut self, root_path: &Path) -> Result<()> {
+    let skybox_texture_path = root_path.join("textures/skybox.tga");
+    let periodic_texture_path = root_path.join("textures/periodic.tga");
     let skybox_texture = Texture::load_from_file(&skybox_texture_path)?;
     let periodic_texture = Rc::new(Texture::load_from_file(&periodic_texture_path)?);
 
@@ -126,8 +125,7 @@ impl Render {
     Ok(())
   }
 
-  pub fn resize_image(&mut self, width: u32, height: u32)
-  {
+  pub fn resize_image(&mut self, width: u32, height: u32)  {
     assert!(width > 0, "Invalid argument");
     assert!(height > 0, "Invalid argument");
 
@@ -161,9 +159,9 @@ impl Render {
     }
   }
 
-  pub fn get_pixel(&self, x: i32, y: i32) -> Color {
-    assert!(x >= 0, "Invalid argument");
-    assert!(y >= 0, "Invalid argument");
+  pub fn get_pixel(&self, x: u32, y: u32) -> Color {
+    assert!(x < self.image_width, "Invalid argument");
+    assert!(y < self.image_height, "Invalid argument");
 
     let idx = x as usize + y as usize * self.image_width as usize;
     let mut color = self.image[idx].clone();
@@ -201,7 +199,6 @@ impl Render {
     assert!(self.cur_x < self.image_width, "Invalid state");
     assert!(self.cur_y < self.image_height, "Invalid state");
 
-
     let mut pixels = pixels;
     let origin = &self.camera_eye;
     let sq_samples = i32::pow(self.samples, 2);
@@ -235,8 +232,8 @@ impl Render {
       } else {
         let mut fin_color: Color;
         let rnd = RND.with(|r| Rc::clone(r));
-        let rnd_x = if self.is_additive { rnd.fastrand() / FAST_RAND_MAX } else { 0 } as f32;
-        let rnd_y = if self.is_additive { rnd.fastrand() / FAST_RAND_MAX } else { 0 } as f32;
+        let rnd_x = if self.is_additive { rnd.fastrand() as f32 / FAST_RAND_MAX  as f32 } else { 0.0 };
+        let rnd_y = if self.is_additive { rnd.fastrand() as f32  / FAST_RAND_MAX  as f32 } else { 0.0 };
         fin_color = Color::new(0.0, 0.0, 0.0);
 
         for ssx in 0..self.samples {
