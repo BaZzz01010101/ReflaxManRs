@@ -1,0 +1,28 @@
+#[derive(PartialEq)]
+pub enum KEY_CODE
+{
+  KEY_1,
+  KEY_2,
+  KEY_3,
+  KEY_4,
+  KEY_5,
+  KEY_6,
+  KEY_7,
+  KEY_8,
+  KEY_9,
+  KEY_0,
+  KEY_F2,
+  KEY_Y,
+  KEY_N,
+  KEY_W,
+  KEY_S,
+  KEY_A,
+  KEY_D,
+  KEY_LEFT,
+  KEY_RIGHT,
+  KEY_UP,
+  KEY_DOWN,
+  KEY_SPACE,
+  KEY_CONTROL,
+  KEY_ESCAPE,
+}

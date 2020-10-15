@@ -5,7 +5,8 @@ mod sphere;
 mod texture;
 mod skybox;
 mod spot_light;
-mod camera;
+// TODO: move camera control to the render and make private
+pub mod camera;
 mod triangle;
 mod scene;
 mod render;

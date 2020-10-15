@@ -13,16 +13,16 @@ const SHIFT_ACCELERATION: f32 = 50.0;
 const SHIFT_DECELERATION: f32 = 50.0;
 const MAX_SHIFT_SPEED: f32 = 10.0;
 
-const TURN_LEFT_MASK: u32 = 1 << 0;
-const TURN_RIGHT_MASK: u32 = 1 << 1;
-const TURN_UP_MASK: u32 = 1 << 2;
-const TURN_DOWN_MASK: u32 = 1 << 3;
-const SHIFT_LEFT_MASK: u32 = 1 << 6;
-const SHIFT_RIGHT_MASK: u32 = 1 << 7;
-const SHIFT_UP_MASK: u32 = 1 << 8;
-const SHIFT_DOWN_MASK: u32 = 1 << 9;
-const SHIFT_FORWARD_MASK: u32 = 1 << 10;
-const SHIFT_BACK_MASK: u32 = 1 << 11;
+pub const TURN_LEFT_MASK: u32 = 1 << 0;
+pub const TURN_RIGHT_MASK: u32 = 1 << 1;
+pub const TURN_UP_MASK: u32 = 1 << 2;
+pub const TURN_DOWN_MASK: u32 = 1 << 3;
+pub const SHIFT_LEFT_MASK: u32 = 1 << 6;
+pub const SHIFT_RIGHT_MASK: u32 = 1 << 7;
+pub const SHIFT_UP_MASK: u32 = 1 << 8;
+pub const SHIFT_DOWN_MASK: u32 = 1 << 9;
+pub const SHIFT_FORWARD_MASK: u32 = 1 << 10;
+pub const SHIFT_BACK_MASK: u32 = 1 << 11;
 
 #[derive(Debug, Default, Clone)]
 pub struct Camera {
@@ -71,7 +71,8 @@ impl Camera {
     }
   }
 
-  fn proceed_control(&mut self, control_flags: u32, time_passed_sec: f32) {
+  // TODO: move control to render and make private
+  pub fn proceed_control(&mut self, control_flags: u32, time_passed_sec: f32) {
     let prev_turn_rl_speed = self.turn_rl_speed;
     let prev_turn_ud_speed = self.turn_ud_speed;
     let prev_shift_rl_speed = self.shift_rl_speed;

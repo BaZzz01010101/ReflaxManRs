@@ -15,6 +15,7 @@ mod render;
 mod system;
 
 use system::Pulse;
+use system::KEY_CODE;
 
 fn main() {
   if let Err(err) = run() {
@@ -68,9 +69,14 @@ fn run() -> Result<()> {
 
     for event in event_pump.poll_iter() {
       match event {
-        Event::Quit { .. } |
-        Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
+        Event::Quit { .. } => {
           break 'running;
+        }
+        Event::KeyDown { keycode: Some(key), .. } => {
+          OnKeyMessage(&mut pulse, key, true);
+        }
+        Event::KeyUp { keycode: Some(key), .. } => {
+          OnKeyMessage(&mut pulse, key, false);
         }
         Event::Window { win_event: WindowEvent::Resized(w, h), .. } => {
           println!("Resize: {} x {}", w, h);
@@ -88,4 +94,34 @@ fn run() -> Result<()> {
   }
 
   Ok(())
+}
+
+fn OnKeyMessage(pulse: &mut Pulse, Key: Keycode, isDown: bool)
+{
+  match Key {
+    Keycode::Left => pulse.onKeyEvent(KEY_CODE::KEY_LEFT, isDown),
+    Keycode::Right => pulse.onKeyEvent(KEY_CODE::KEY_RIGHT, isDown),
+    Keycode::Up => pulse.onKeyEvent(KEY_CODE::KEY_UP, isDown),
+    Keycode::Down => pulse.onKeyEvent(KEY_CODE::KEY_DOWN, isDown),
+    Keycode::W => pulse.onKeyEvent(KEY_CODE::KEY_W, isDown),
+    Keycode::S => pulse.onKeyEvent(KEY_CODE::KEY_S, isDown),
+    Keycode::A => pulse.onKeyEvent(KEY_CODE::KEY_A, isDown),
+    Keycode::D => pulse.onKeyEvent(KEY_CODE::KEY_D, isDown),
+    Keycode::Space => pulse.onKeyEvent(KEY_CODE::KEY_SPACE, isDown),
+    Keycode::LCtrl => pulse.onKeyEvent(KEY_CODE::KEY_CONTROL, isDown),
+    Keycode::F2 => pulse.onKeyEvent(KEY_CODE::KEY_F2, isDown),
+    Keycode::Num0 => pulse.onKeyEvent(KEY_CODE::KEY_1, isDown),
+    Keycode::Num2 => pulse.onKeyEvent(KEY_CODE::KEY_2, isDown),
+    Keycode::Num3 => pulse.onKeyEvent(KEY_CODE::KEY_3, isDown),
+    Keycode::Num4 => pulse.onKeyEvent(KEY_CODE::KEY_4, isDown),
+    Keycode::Num5 => pulse.onKeyEvent(KEY_CODE::KEY_5, isDown),
+    Keycode::Num6 => pulse.onKeyEvent(KEY_CODE::KEY_6, isDown),
+    Keycode::Num7 => pulse.onKeyEvent(KEY_CODE::KEY_7, isDown),
+    Keycode::Num8 => pulse.onKeyEvent(KEY_CODE::KEY_8, isDown),
+    Keycode::Num9 => pulse.onKeyEvent(KEY_CODE::KEY_9, isDown),
+    Keycode::Escape => pulse.onKeyEvent(KEY_CODE::KEY_ESCAPE, isDown),
+    Keycode::Y => pulse.onKeyEvent(KEY_CODE::KEY_Y, isDown),
+    Keycode::N => pulse.onKeyEvent(KEY_CODE::KEY_N, isDown),
+    _ => {}
+  }
 }
