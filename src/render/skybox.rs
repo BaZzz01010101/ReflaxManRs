@@ -39,8 +39,8 @@ impl Skybox {
     let ax = ray.x.abs() + VERY_SMALL_NUMBER;
     let ay = ray.y.abs() + VERY_SMALL_NUMBER;
     let az = ray.z.abs() + VERY_SMALL_NUMBER;
-    let mut u: f32 = 0.0;
-    let mut v: f32 = 0.0;
+    let u: f32;
+    let v: f32;
 
     if az >= ax && az >= ay {
       if ray.z > 0.0 {

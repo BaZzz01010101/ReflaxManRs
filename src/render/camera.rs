@@ -216,7 +216,7 @@ impl Camera {
     }
   }
 
-  fn is_in_motion(&self) -> bool {
+  pub fn is_in_motion(&self) -> bool {
     return self.turn_rl_speed.abs() > f32::EPSILON ||
       self.turn_ud_speed.abs() > f32::EPSILON ||
       self.shift_rl_speed.abs() > f32::EPSILON ||

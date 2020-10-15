@@ -1,5 +1,5 @@
 use crate::math::{Matrix33, Vector3};
-use crate::render::{Camera, Scene, Color, Skybox, Texture, Material, MaterialKind, Pulse};
+use crate::render::{Camera, Scene, Color, Skybox, Texture, Material, MaterialKind};
 use std::path::Path;
 
 use anyhow::{Result, Error, Context};
