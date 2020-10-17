@@ -249,14 +249,12 @@ impl Texture {
 
 
   pub fn get_texel_color(&self, u: f32, v: f32) -> Result<Color> {
-    const UPPER_BOUND: f32 = 1.0 - f32::EPSILON;
-
-    if u < 0.0 || u > UPPER_BOUND || v < 0.0 || v >= UPPER_BOUND {
+    if u < 0.0 || u > 1.0 || v < 0.0 || v > 1.0 {
       return Result::Err(Error::msg("Texel position out of bounds"));
     }
 
-    let fx = clamp(u, 0.0, UPPER_BOUND) * self.width as f32;
-    let fy = clamp(v, 0.0, UPPER_BOUND) * self.height as f32;
+    let fx = clamp(u, 0.0, 1.0 - f32::EPSILON) * self.width as f32;
+    let fy = clamp(v, 0.0, 1.0 - f32::EPSILON) * self.height as f32;
     let x = fx as u32;
     let y = fy as u32;
 
