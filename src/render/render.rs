@@ -173,20 +173,20 @@ impl Render {
     color
   }
 
-  pub fn begin_render(&mut self, reflect_num: u32, sample_num: i32, additive: bool) {
-    assert!(reflect_num > 0, "Invalid argument");
-    assert_ne!(sample_num, 0, "Invalid argument");
+  pub fn begin_render(&mut self, reflections: u32, samples: i32, is_additive: bool) {
+    assert!(reflections > 0, "Invalid argument");
+    assert_ne!(samples, 0, "Invalid argument");
 
-    self.max_reflections = reflect_num;
-    self.samples = sample_num;
-    self.is_additive = additive;
+    self.max_reflections = reflections;
+    self.samples = samples;
+    self.is_additive = is_additive;
     self.in_progress = true;
     self.cur_x = 0;
     self.cur_y = 0;
     self.camera_view = self.camera.view.clone();
     self.camera_eye = self.camera.eye.clone();
 
-    if additive {
+    if is_additive {
       self.additive_counter += 1;
     } else {
       self.additive_counter = 0;
@@ -274,13 +274,6 @@ impl Render {
     }
 
     Ok(self.in_progress)
-  }
-
-  pub fn render_all(&mut self, reflect_num: u32, sample_num: i32, additive: bool) -> Result<()> {
-    self.begin_render(reflect_num, sample_num, additive);
-    self.render(self.image_height)?;
-
-    Ok(())
   }
 
   pub fn get_progress(&self) -> f32 {
