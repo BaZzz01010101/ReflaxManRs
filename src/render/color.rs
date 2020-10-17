@@ -9,6 +9,7 @@ use std::cmp::{PartialEq};
 use std::fmt;
 use std::iter::{IntoIterator, FromIterator};
 
+use super::math::ApproxEq;
 use super::math::clamp;
 
 #[derive(Debug, Default, Clone, PartialEq)]
@@ -180,6 +181,14 @@ impl DivAssign<&f32> for &mut Color {
   #[inline]
   fn div_assign(&mut self, other: &f32) {
     **self = &**self / other;
+  }
+}
+
+impl ApproxEq<&Color> for &Color {
+  fn approx_eq(self, right: &Color, delta: f32) -> bool {
+    f32::abs(self.r - right.r) < delta &&
+      f32::abs(self.g - right.g) < delta &&
+      f32::abs(self.b - right.b) < delta
   }
 }
 
