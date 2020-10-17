@@ -11,6 +11,7 @@ mod triangle;
 mod scene;
 mod render;
 
+#[cfg(test)]
 mod tests;
 
 use crate::math;

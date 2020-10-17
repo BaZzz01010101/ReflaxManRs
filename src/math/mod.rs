@@ -4,6 +4,7 @@ mod clamp;
 mod approx_eq;
 mod rnd;
 
+#[cfg(test)]
 mod tests;
 
 pub mod constants;
