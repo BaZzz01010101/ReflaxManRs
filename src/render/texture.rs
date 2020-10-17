@@ -1,10 +1,11 @@
 use std::path::Path;
 use std::fs::File;
-use std::io::{Read, BufReader, Seek, SeekFrom};
+use std::io::{Read, Write, BufReader, BufWriter, Seek, SeekFrom};
 use std::convert::TryInto;
+use std::mem::size_of;
 
 use anyhow::{Result, Error, Context};
-use byteorder::{ReadBytesExt, LittleEndian};
+use byteorder::{ReadBytesExt, LittleEndian, WriteBytesExt};
 
 use super::math::clamp;
 use super::Color;
@@ -26,6 +27,34 @@ struct TGAFileHeader
   image_descriptor: i8,
 }
 
+#[repr(packed)]
+#[derive(Default)]
+struct BMPFileHeader
+{
+  signature: u16,
+  size: u32,
+  reserved_1: u16,
+  reserved_2: u16,
+  off_bits: u32,
+}
+
+#[repr(packed)]
+#[derive(Default)]
+struct BMPInfoHeader
+{
+  size: u32,
+  width: i32,
+  height: i32,
+  planes: u16,
+  bit_count: u16,
+  compression: u32,
+  size_image: u32,
+  x_pels_per_meter: i32,
+  y_pels_per_meter: i32,
+  clr_used: u32,
+  clr_important: u32,
+}
+
 #[derive(Debug, Default, Clone)]
 pub struct Texture {
   pub width: u32,
@@ -40,7 +69,9 @@ impl Texture {
       .to_str().ok_or(Error::msg("Invalid file extension"))?;
 
     match extension {
-      // ".bmp" => Texture::load_from_bmp_file(path),
+      ".bmp" => {
+        Result::Err(Error::msg("Not implemented"))
+      }
       "tga" => {
         let file = File::open(path)?;
         let stream = BufReader::new(file);
@@ -48,6 +79,27 @@ impl Texture {
         Texture::from_tga(stream)
       }
       _ => Result::Err(Error::msg("File not supported")),
+    }
+  }
+
+  pub fn save_to_file(&self, path: &Path) -> Result<()> {
+    let extension = path
+      .extension().ok_or(Error::msg("File has no extension"))?
+      .to_str().ok_or(Error::msg("Invalid file extension"))?;
+
+    match extension {
+      "bmp" => {
+        let file = File::open(path)?;
+        let stream = BufWriter::new(file);
+
+        self.to_bmp(stream)
+      }
+      ".tga" => {
+        Result::Err(Error::msg("Not implemented"))
+      }
+      _ => {
+        Result::Err(Error::msg("File not supported"))
+      }
     }
   }
 
@@ -132,12 +184,55 @@ impl Texture {
     })
   }
 
-  fn _save_to_bmp_file(&self, _path: &Path) -> Result<()> {
-    Result::Err(Error::msg("Not implemented"))
-  }
+  pub(in super) fn to_bmp(&self, mut stream: impl Write + Seek) -> Result<()> {
+    const FILE_HEADER_SIZE: u32 = size_of::<BMPFileHeader>() as u32;
+    const INFO_HEADER_SIZE: u32 = size_of::<BMPInfoHeader>() as u32;
+    let image_data_size = self.width * self.height * 3;
 
-  fn _save_to_tga_file(&self, _path: &Path) -> Result<()> {
-    Result::Err(Error::msg("Not implemented"))
+    let file_header = BMPFileHeader {
+      signature: (('M' as u16) << 8) | ('B' as u16),
+      size: FILE_HEADER_SIZE + INFO_HEADER_SIZE + image_data_size,
+      reserved_1: 0,
+      reserved_2: 0,
+      off_bits: FILE_HEADER_SIZE + INFO_HEADER_SIZE,
+    };
+
+    let info_header = BMPInfoHeader {
+      size: INFO_HEADER_SIZE,
+      width: self.width as i32,
+      height: self.height as i32,
+      planes: 1,
+      bit_count: 24,
+      compression: 0,
+      size_image: 0,
+      x_pels_per_meter: 0,
+      y_pels_per_meter: 0,
+      clr_used: 0,
+      clr_important: 0,
+    };
+
+    stream.write_u16::<LittleEndian>(file_header.signature)?;
+    stream.write_u32::<LittleEndian>(file_header.size)?;
+    stream.write_u16::<LittleEndian>(file_header.reserved_1)?;
+    stream.write_u16::<LittleEndian>(file_header.reserved_2)?;
+    stream.write_u32::<LittleEndian>(file_header.off_bits)?;
+
+    stream.write_u32::<LittleEndian>(info_header.size)?;
+    stream.write_i32::<LittleEndian>(info_header.width)?;
+    stream.write_i32::<LittleEndian>(info_header.height)?;
+    stream.write_u16::<LittleEndian>(info_header.planes)?;
+    stream.write_u16::<LittleEndian>(info_header.bit_count)?;
+    stream.write_u32::<LittleEndian>(info_header.compression)?;
+    stream.write_u32::<LittleEndian>(info_header.size_image)?;
+    stream.write_i32::<LittleEndian>(info_header.x_pels_per_meter)?;
+    stream.write_i32::<LittleEndian>(info_header.y_pels_per_meter)?;
+    stream.write_u32::<LittleEndian>(info_header.clr_used)?;
+    stream.write_u32::<LittleEndian>(info_header.clr_important)?;
+
+    stream.write_all(&self.color_buffer)?;
+    stream.flush()?;
+
+    Ok(())
   }
 
   pub fn get_pixel_color(&self, x: u32, y: u32) -> Result<Color> {
