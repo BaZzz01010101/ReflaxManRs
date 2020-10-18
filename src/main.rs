@@ -10,7 +10,7 @@ use sdl2::render::{TextureAccess, WindowCanvas};
 use sdl2::surface::Surface;
 
 use system::KeyCode;
-use system::Pulse;
+use system::App;
 
 use crate::math::constants::VERY_SMALL_NUMBER;
 
@@ -49,9 +49,9 @@ fn run() -> Result<()> {
   canvas.present();
   let texture_creator = canvas.texture_creator();
   let mut event_pump = sdl_context.event_pump().unwrap();
-  let mut pulse = Pulse::new();
-  pulse.init()?;
-  pulse.resize_image(width, height);
+  let mut app = App::new();
+  app.init()?;
+  app.resize_image(width, height);
   let font_data = include_bytes!("../assets/fonts/arial.ttf");
   let font = Font::try_from_bytes(font_data as &[u8]).expect("Error constructing Font");
   let mut time = Instant::now();
@@ -59,15 +59,15 @@ fn run() -> Result<()> {
   let mut final_texture = texture_creator.create_texture(PixelFormatEnum::RGBA8888, TextureAccess::Static, width, height)?;
 
   'running: loop {
-    let mut need_repaint = pulse.pulse()?;
+    let mut need_repaint = app.pulse()?;
 
     if need_repaint {
-      image_surface = rebuild_image_surface(&pulse);
+      image_surface = rebuild_image_surface(&app);
     }
 
     if need_repaint || time.elapsed().as_millis() > 100 {
       time = Instant::now();
-      let final_surface = render_all_text(&pulse, &image_surface, &font, width, height);
+      let final_surface = render_all_text(&app, &image_surface, &font, width, height);
       final_texture = texture_creator.create_texture_from_surface(final_surface).unwrap();
       need_repaint = true;
     }
@@ -83,16 +83,16 @@ fn run() -> Result<()> {
           break 'running;
         }
         Event::KeyDown { keycode: Some(key), .. } => {
-          handle_key_message(&mut pulse, key, true);
+          handle_key_message(&mut app, key, true);
         }
         Event::KeyUp { keycode: Some(key), .. } => {
-          handle_key_message(&mut pulse, key, false);
+          handle_key_message(&mut app, key, false);
         }
         Event::Window { win_event: WindowEvent::Resized(w, h), .. } => {
           println!("Resize: {} x {}", w, h);
           width = w as u32;
           height = h as u32;
-          pulse.resize_image(width, height);
+          app.resize_image(width, height);
         }
         _ => {}
       }
@@ -102,31 +102,31 @@ fn run() -> Result<()> {
   Ok(())
 }
 
-fn handle_key_message(pulse: &mut Pulse, key_code: Keycode, is_down: bool) {
+fn handle_key_message(app: &mut App, key_code: Keycode, is_down: bool) {
   match key_code {
-    Keycode::Left => pulse.handle_key_event(KeyCode::KeyLeft, is_down),
-    Keycode::Right => pulse.handle_key_event(KeyCode::KeyRight, is_down),
-    Keycode::Up => pulse.handle_key_event(KeyCode::KeyUp, is_down),
-    Keycode::Down => pulse.handle_key_event(KeyCode::KeyDown, is_down),
-    Keycode::W => pulse.handle_key_event(KeyCode::KeyW, is_down),
-    Keycode::S => pulse.handle_key_event(KeyCode::KeyS, is_down),
-    Keycode::A => pulse.handle_key_event(KeyCode::KeyA, is_down),
-    Keycode::D => pulse.handle_key_event(KeyCode::KeyD, is_down),
-    Keycode::Space => pulse.handle_key_event(KeyCode::KeySpace, is_down),
-    Keycode::LCtrl => pulse.handle_key_event(KeyCode::KeyControl, is_down),
-    Keycode::F2 => pulse.handle_key_event(KeyCode::KeyF2, is_down),
-    Keycode::Num1 => pulse.handle_key_event(KeyCode::Key1, is_down),
-    Keycode::Num2 => pulse.handle_key_event(KeyCode::Key2, is_down),
-    Keycode::Num3 => pulse.handle_key_event(KeyCode::Key3, is_down),
-    Keycode::Num4 => pulse.handle_key_event(KeyCode::Key4, is_down),
-    Keycode::Num5 => pulse.handle_key_event(KeyCode::Key5, is_down),
-    Keycode::Num6 => pulse.handle_key_event(KeyCode::Key6, is_down),
-    Keycode::Num7 => pulse.handle_key_event(KeyCode::Key7, is_down),
-    Keycode::Num8 => pulse.handle_key_event(KeyCode::Key8, is_down),
-    Keycode::Num9 => pulse.handle_key_event(KeyCode::Key9, is_down),
-    Keycode::Escape => pulse.handle_key_event(KeyCode::KeyEscape, is_down),
-    Keycode::Y => pulse.handle_key_event(KeyCode::KeyY, is_down),
-    Keycode::N => pulse.handle_key_event(KeyCode::KeyN, is_down),
+    Keycode::Left => app.handle_key_event(KeyCode::KeyLeft, is_down),
+    Keycode::Right => app.handle_key_event(KeyCode::KeyRight, is_down),
+    Keycode::Up => app.handle_key_event(KeyCode::KeyUp, is_down),
+    Keycode::Down => app.handle_key_event(KeyCode::KeyDown, is_down),
+    Keycode::W => app.handle_key_event(KeyCode::KeyW, is_down),
+    Keycode::S => app.handle_key_event(KeyCode::KeyS, is_down),
+    Keycode::A => app.handle_key_event(KeyCode::KeyA, is_down),
+    Keycode::D => app.handle_key_event(KeyCode::KeyD, is_down),
+    Keycode::Space => app.handle_key_event(KeyCode::KeySpace, is_down),
+    Keycode::LCtrl => app.handle_key_event(KeyCode::KeyControl, is_down),
+    Keycode::F2 => app.handle_key_event(KeyCode::KeyF2, is_down),
+    Keycode::Num1 => app.handle_key_event(KeyCode::Key1, is_down),
+    Keycode::Num2 => app.handle_key_event(KeyCode::Key2, is_down),
+    Keycode::Num3 => app.handle_key_event(KeyCode::Key3, is_down),
+    Keycode::Num4 => app.handle_key_event(KeyCode::Key4, is_down),
+    Keycode::Num5 => app.handle_key_event(KeyCode::Key5, is_down),
+    Keycode::Num6 => app.handle_key_event(KeyCode::Key6, is_down),
+    Keycode::Num7 => app.handle_key_event(KeyCode::Key7, is_down),
+    Keycode::Num8 => app.handle_key_event(KeyCode::Key8, is_down),
+    Keycode::Num9 => app.handle_key_event(KeyCode::Key9, is_down),
+    Keycode::Escape => app.handle_key_event(KeyCode::KeyEscape, is_down),
+    Keycode::Y => app.handle_key_event(KeyCode::KeyY, is_down),
+    Keycode::N => app.handle_key_event(KeyCode::KeyN, is_down),
     _ => {}
   }
 }
@@ -172,14 +172,14 @@ fn render_line(surface: &mut Surface, font: &Font, size: f32, rgb: [u8; 3], text
   }
 }
 
-fn rebuild_image_surface<'a, 'b>(pulse: &'a Pulse) -> Surface<'b> {
-  let (width, height) = pulse.get_render_image_size();
+fn rebuild_image_surface<'a, 'b>(app: &'a App) -> Surface<'b> {
+  let (width, height) = app.get_render_image_size();
   let mut surface = Surface::new(width, height, PixelFormatEnum::RGBA8888).unwrap();
   let pixel_data = surface.without_lock_mut().unwrap();
 
   for x in 0..width {
     for y in 0..height {
-      let rgb = pulse.get_render_image_pixel(x, height - y - 1);
+      let rgb = app.get_render_image_pixel(x, height - y - 1);
       let idx = (x + y * width) as usize * 4;
       pixel_data[idx] = 255;
       pixel_data[idx + 1] = rgb[2];
@@ -191,7 +191,7 @@ fn rebuild_image_surface<'a, 'b>(pulse: &'a Pulse) -> Surface<'b> {
   surface
 }
 
-fn render_all_text<'a, 'b>(pulse: &'a Pulse, background_surface: &Surface, font: &Font, width: u32, height: u32) -> Surface<'b> {
+fn render_all_text<'a, 'b>(app: &'a App, background_surface: &Surface, font: &Font, width: u32, height: u32) -> Surface<'b> {
   let mut surface = Surface::new(width, height, PixelFormatEnum::RGBA8888).unwrap();
   let center = surface.rect().center();
   let bk_aspect = background_surface.width() as f32 / background_surface.height() as f32;
@@ -216,7 +216,7 @@ fn render_all_text<'a, 'b>(pulse: &'a Pulse, background_surface: &Surface, font:
   let metrics = font.v_metrics(rusttype::Scale::uniform(FONT_SIZE));
   let line_height = (metrics.ascent - metrics.descent + metrics.line_gap) as u32 + 3;
 
-  pulse.get_current_screen_text().iter().for_each(|line| {
+  app.get_current_screen_text().iter().for_each(|line| {
     render_line(&mut surface, &font, FONT_SIZE, [170, 170, 170], line, x + 1, y + 1);
     render_line(&mut surface, &font, FONT_SIZE, [170, 170, 170], line, x + 1, y - 1);
     render_line(&mut surface, &font, FONT_SIZE, [170, 170, 170], line, x - 1, y + 1);

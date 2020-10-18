@@ -2,9 +2,9 @@ use crate::render;
 
 pub use self::config::default;
 pub use self::keyboard::KeyCode;
-pub use self::pulse::Pulse;
+pub use self::app::App;
 
-mod pulse;
+mod app;
 mod config;
 mod keyboard;
 

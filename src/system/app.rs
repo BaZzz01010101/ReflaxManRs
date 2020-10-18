@@ -72,7 +72,7 @@ const SUPERSAMPLE_RATES: [SsRate; 9] = [
   SsRate { rate: 256, tip: "(slow but smooth)" },
 ];
 
-pub struct Pulse {
+pub struct App {
   render: Render,
   state: State,
   last_pulse_time: Instant,
@@ -93,9 +93,9 @@ pub struct Pulse {
   window_height: u32,
 }
 
-impl Pulse {
-  pub fn new() -> Pulse {
-    Pulse {
+impl App {
+  pub fn new() -> App {
+    App {
       render: Render::new(),
       state: State::New,
       last_pulse_time: Instant::now(),
