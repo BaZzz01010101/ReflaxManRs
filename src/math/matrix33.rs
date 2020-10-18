@@ -1,17 +1,16 @@
+use std::cmp::PartialEq;
+use std::convert::From;
+use std::fmt;
+use std::iter::{Flatten, FromIterator, IntoIterator};
 use std::ops::{
   Add, AddAssign,
-  Sub, SubAssign,
-  Mul, MulAssign,
   Div, DivAssign,
-  Neg,
+  Mul, MulAssign,
+  Neg, Sub,
+  SubAssign,
 };
-
-use std::cmp::{PartialEq};
 use std::ops::{Index, IndexMut};
 use std::slice::{Iter, IterMut};
-use std::iter::{IntoIterator, FromIterator, Flatten};
-use std::convert::{From};
-use std::fmt;
 
 use super::constants::VERY_SMALL_NUMBER;
 use super::Vector3;
@@ -38,10 +37,10 @@ impl Matrix33 {
   pub fn from_cols(
     col_0: impl AsRef<Vector3>,
     col_1: impl AsRef<Vector3>,
-    col_2: impl AsRef<Vector3>
+    col_2: impl AsRef<Vector3>,
   ) -> Matrix33
   {
-    Matrix33{
+    Matrix33 {
       el: [
         [col_0.as_ref().x, col_1.as_ref().x, col_2.as_ref().x],
         [col_0.as_ref().y, col_1.as_ref().y, col_2.as_ref().y],

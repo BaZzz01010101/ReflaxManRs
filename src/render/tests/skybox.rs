@@ -1,8 +1,7 @@
-#[cfg(test)]
 use std::io::Cursor;
 
+use super::{Color, Skybox, Texture};
 use super::math::Vector3;
-use super::{Color, Texture, Skybox};
 
 const SKYBOX_24_BPP: &[u8] = include_bytes!("res/skybox_32x24_24_bpp.tga");
 
@@ -62,7 +61,7 @@ fn trace_bottom() {
 }
 
 #[test]
-fn trace_front_left_interpolated () {
+fn trace_front_left_interpolated() {
   // let stream = Cursor::new(SKYBOX_24_BPP.to_vec());
   // let texture = Texture::from_tga(stream).unwrap();
   // //println!("{}", texture.get_texel_color(0.234375, 0.5).unwrap());

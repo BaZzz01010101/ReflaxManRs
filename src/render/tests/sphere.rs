@@ -1,19 +1,14 @@
-#[cfg(test)]
-
 use std::f32::EPSILON;
-use std::io::Cursor;
-
-use super::math::ApproxEq;
-use super::math::Vector3;
-use super::Texture;
 
 use super::{
   Color,
-  MaterialKind,
   Material,
+  MaterialKind,
   Sphere,
   Trace,
 };
+use super::math::ApproxEq;
+use super::math::Vector3;
 
 #[test]
 fn trace() {
@@ -38,7 +33,7 @@ fn trace() {
     Some(&mut out_norm),
     Some(&mut out_reflected_ray),
     Some(&mut out_distance),
-    Some(&mut out_drop_material)
+    Some(&mut out_drop_material),
   ).unwrap();
 
   assert_eq!(out_drop, Vector3::new(0.0, 0.0, 1.0), "drop point");

@@ -1,11 +1,10 @@
 use std::rc::Rc;
-use std::f32::consts::{PI, FRAC_PI_2};
 
-use anyhow::{Result, Error, Context};
+use anyhow::Result;
 
-use super::math::{Vector3, Matrix33, clamp};
+use super::{Material, Texture, Trace};
+use super::math::{Matrix33, Vector3};
 use super::math::constants::{DELTA, VERY_SMALL_NUMBER};
-use super::{Trace, Texture, Material};
 
 #[derive(Default, Clone)]
 pub struct Triangle {

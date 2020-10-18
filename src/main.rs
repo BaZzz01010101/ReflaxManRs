@@ -1,12 +1,18 @@
-use sdl2::render::{WindowCanvas, TextureAccess, BlendMode};
-use sdl2::pixels::{Color, PixelFormatEnum};
+use std::time::Instant;
+
+use anyhow::{Error, Result};
+use rusttype::Font;
 use sdl2::event::{Event, WindowEvent};
 use sdl2::keyboard::Keycode;
+use sdl2::pixels::{Color, PixelFormatEnum};
+use sdl2::rect::Rect;
+use sdl2::render::{TextureAccess, WindowCanvas};
 use sdl2::surface::Surface;
-use sdl2::rect::{Rect, Point};
 
-use anyhow::{Result, Error};
-use rusttype::{Font};
+use system::KeyCode;
+use system::Pulse;
+
+use crate::math::constants::VERY_SMALL_NUMBER;
 
 #[macro_use]
 mod macros;
@@ -14,11 +20,6 @@ mod macros;
 mod math;
 mod render;
 mod system;
-
-use system::Pulse;
-use system::KeyCode;
-use std::time::Instant;
-use crate::math::constants::VERY_SMALL_NUMBER;
 
 fn main() {
   if let Err(err) = run() {
@@ -61,7 +62,7 @@ fn run() -> Result<()> {
     let mut need_repaint = pulse.pulse()?;
 
     if need_repaint {
-      image_surface = create_surface(&pulse);
+      image_surface = rebuild_image_surface(&pulse);
     }
 
     if need_repaint || time.elapsed().as_millis() > 100 {
@@ -171,7 +172,7 @@ fn render_line(surface: &mut Surface, font: &Font, size: f32, rgb: [u8; 3], text
   }
 }
 
-fn create_surface<'a, 'b>(pulse: &'a Pulse) -> Surface<'b> {
+fn rebuild_image_surface<'a, 'b>(pulse: &'a Pulse) -> Surface<'b> {
   let (width, height) = pulse.get_render_image_size();
   let mut surface = Surface::new(width, height, PixelFormatEnum::RGBA8888).unwrap();
   let pixel_data = surface.without_lock_mut().unwrap();
@@ -190,13 +191,11 @@ fn create_surface<'a, 'b>(pulse: &'a Pulse) -> Surface<'b> {
   surface
 }
 
-fn render_all_text<'a, 'b>(pulse: &'a Pulse, background_surface: &Surface, font: &Font, width: u32, height:u32) -> Surface<'b> {
+fn render_all_text<'a, 'b>(pulse: &'a Pulse, background_surface: &Surface, font: &Font, width: u32, height: u32) -> Surface<'b> {
   let mut surface = Surface::new(width, height, PixelFormatEnum::RGBA8888).unwrap();
   let center = surface.rect().center();
-  let bk_rect = background_surface.rect();
-  let rect = surface.rect();
-  let bk_aspect =   background_surface.width() as f32 / background_surface.height() as f32;
-  let aspect =   surface.width() as f32 / surface.height() as f32;
+  let bk_aspect = background_surface.width() as f32 / background_surface.height() as f32;
+  let aspect = surface.width() as f32 / surface.height() as f32;
 
   let dst_rect = if aspect > VERY_SMALL_NUMBER {
     let (width, height) = if bk_aspect < aspect {
@@ -206,8 +205,7 @@ fn render_all_text<'a, 'b>(pulse: &'a Pulse, background_surface: &Surface, font:
     };
 
     Rect::from_center(center, width, height)
-  }
-  else {
+  } else {
     Rect::from_center(center, 1, 1)
   };
 

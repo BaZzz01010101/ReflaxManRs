@@ -1,8 +1,8 @@
+use std::cell::RefCell;
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
-use std::time::{Instant};
 use std::num::Wrapping;
-use std::cell::RefCell;
+use std::time::Instant;
 
 use super::constants::FAST_RAND_MAX;
 

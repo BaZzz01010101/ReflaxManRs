@@ -1,26 +1,25 @@
 use std::path::PathBuf;
-use std::time::{SystemTime, Instant, UNIX_EPOCH, Duration};
+use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
-use anyhow::{Result};
+use anyhow::Result;
 
 use crate::math::constants::VERY_SMALL_NUMBER;
 
-use super::render::{Render};
-use super::KeyCode;
 use super::default as Config;
-
+use super::KeyCode;
 use super::render::camera::{
-  TURN_LEFT_MASK,
-  TURN_RIGHT_MASK,
-  TURN_UP_MASK,
-  TURN_DOWN_MASK,
+  SHIFT_BACK_MASK,
+  SHIFT_DOWN_MASK,
+  SHIFT_FORWARD_MASK,
   SHIFT_LEFT_MASK,
   SHIFT_RIGHT_MASK,
   SHIFT_UP_MASK,
-  SHIFT_DOWN_MASK,
-  SHIFT_FORWARD_MASK,
-  SHIFT_BACK_MASK,
+  TURN_DOWN_MASK,
+  TURN_LEFT_MASK,
+  TURN_RIGHT_MASK,
+  TURN_UP_MASK,
 };
+use super::render::Render;
 
 #[derive(PartialEq)]
 enum State
@@ -34,11 +33,6 @@ enum State
   ScreenshotRenderEnd,
   ScreenshotRenderSave,
   ScreenshotRenderCancelRequested,
-}
-
-pub enum PulseResult {
-  InProgress,
-  ImageReady
 }
 
 struct Resolution<'a>
@@ -95,9 +89,8 @@ pub struct Pulse {
   motion_dyn_samples: i32,
   prev_samples: i32,
   prev_in_motion: bool,
-  screen_text: Vec<String>,
   window_width: u32,
-  window_height:u32,
+  window_height: u32,
 }
 
 impl Pulse {
@@ -119,7 +112,6 @@ impl Pulse {
       motion_dyn_samples: 0,
       prev_samples: 0,
       prev_in_motion: false,
-      screen_text: Vec::new(),
       window_width: 1,
       window_height: 1,
     }
@@ -331,7 +323,7 @@ impl Pulse {
   }
 
   pub fn get_current_screen_text(&self) -> Vec<String> {
-    let mut screen_text= Vec::new();
+    let mut screen_text = Vec::new();
 
     match &self.state {
       State::CameraControl => {
@@ -424,7 +416,7 @@ impl Pulse {
 
     self.render.resize_image(self.screenshot_width, self.screenshot_height);
     self.screenshot_start_ticks = Some(Instant::now());
-    self.render.begin_render(Config::SCRNSHOT_REFECTIONS, self.screenshot_samples, false);
+    self.render.begin_render(Config::SCREENSHOT_REFLECTIONS, self.screenshot_samples, false);
     self.render_chunk_in_pixels = 1;
 
     Ok(())

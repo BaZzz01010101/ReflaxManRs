@@ -1,8 +1,8 @@
-use anyhow::{Result};
+use anyhow::Result;
 
-use super::math::Vector3;
-use super::math::constants::VERY_SMALL_NUMBER;
 use super::{Color, Texture};
+use super::math::constants::VERY_SMALL_NUMBER;
+use super::math::Vector3;
 
 #[derive(Debug, Default)]
 pub struct Skybox {

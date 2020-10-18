@@ -1,22 +1,16 @@
-#[cfg(test)]
-use std::f32::EPSILON;
 use std::io::Cursor;
-use std::rc::Rc;
-
-use super::math::ApproxEq;
-use super::math::Vector3;
-use super::math::constants::{DELTA};
-use super::Texture;
 
 use super::{
   Color,
-  MaterialKind,
   Material,
-  Sphere,
-  Skybox,
+  MaterialKind,
   Scene,
-  Trace,
+  Skybox,
 };
+use super::math::ApproxEq;
+use super::math::constants::DELTA;
+use super::math::Vector3;
+use super::Texture;
 
 const SKYBOX_24_BPP: &[u8] = include_bytes!("res/skybox_32x24_24_bpp.tga");
 
@@ -56,5 +50,4 @@ fn trace_metal_ball() {
   let color = scene.trace(&trace_origin, &trace_ray, 10).unwrap();
   let expected = Color::new(0.2, 1.0, 1.0);
   assert!(color.approx_eq(&expected, DELTA), "Hit color of skybox\n left: {}\n right: {}", color, expected);
-
 }

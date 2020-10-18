@@ -1,13 +1,12 @@
+use std::cmp::PartialEq;
+use std::fmt;
+use std::iter::{FromIterator, IntoIterator};
 use std::ops::{
   Add, AddAssign,
-  Sub, SubAssign,
-  Mul, MulAssign,
   Div, DivAssign,
+  Mul, MulAssign,
+  Sub, SubAssign,
 };
-
-use std::cmp::{PartialEq};
-use std::fmt;
-use std::iter::{IntoIterator, FromIterator};
 
 use super::math::ApproxEq;
 use super::math::clamp;

@@ -1,5 +1,5 @@
-use super::math::Vector3;
 use super::Color;
+use super::math::Vector3;
 
 pub struct SpotLight {
   pub origin: Vector3,

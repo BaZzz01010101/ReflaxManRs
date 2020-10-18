@@ -1,14 +1,14 @@
-use std::path::Path;
-use std::fs::File;
-use std::io::{Read, Write, BufReader, BufWriter, Seek, SeekFrom};
 use std::convert::TryInto;
+use std::fs::File;
+use std::io::{BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 use std::mem::size_of;
+use std::path::Path;
 
-use anyhow::{Result, Error, Context};
-use byteorder::{ReadBytesExt, LittleEndian, WriteBytesExt};
+use anyhow::{Context, Error, Result};
+use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 
-use super::math::clamp;
 use super::Color;
+use super::math::clamp;
 
 #[derive(Default)]
 struct TGAFileHeader
@@ -234,7 +234,7 @@ impl Texture {
 
     for y in 0..height {
       for x in 0..width {
-        let idx = (x + y * width)  as usize * 3;
+        let idx = (x + y * width) as usize * 3;
         let mut rgb: [u8; 3] = self.color_buffer[idx..idx + 3].try_into().unwrap();
         rgb.reverse();
         stream.write_all(&rgb)?;

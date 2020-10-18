@@ -1,14 +1,12 @@
-#[cfg(test)]
-use super::math::{Vector3, ApproxEq};
-use super::math::constants::DELTA;
-
 use super::{
   Color,
-  MaterialKind,
   Material,
-  Triangle,
+  MaterialKind,
   Trace,
+  Triangle,
 };
+use super::math::{ApproxEq, Vector3};
+use super::math::constants::DELTA;
 
 #[test]
 fn trace() {
@@ -42,11 +40,11 @@ fn trace() {
   assert!(out_drop.approx_eq(&expected, DELTA), "Drop point.\n left: {}\n right: {}", out_drop, expected);
 
   out_norm.normalize();
-  let expected =  Vector3::new(0.5773503, 0.5773503, 0.5773503);
+  let expected = Vector3::new(0.5773503, 0.5773503, 0.5773503);
   assert!(out_norm.approx_eq(&expected, DELTA), "Drop point normal.\n left: {}\n right: {}", out_norm, expected);
 
   out_reflected_ray.normalize();
-  let expected =  Vector3::new(-0.5773503, -0.5773503, -0.5773503);
+  let expected = Vector3::new(-0.5773503, -0.5773503, -0.5773503);
   assert!(out_reflected_ray.approx_eq(&expected, DELTA), "Reflected ray (normalized).\n left: {}\n right: {}", out_reflected_ray, expected);
 
   let expected = 17.320509;

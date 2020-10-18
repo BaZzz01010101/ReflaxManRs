@@ -1,6 +1,6 @@
-use std::f32::consts::{PI, FRAC_PI_2};
+use std::f32::consts::{FRAC_PI_2, PI};
 
-use super::math::{Vector3, Matrix33};
+use super::math::{Matrix33, Vector3};
 use super::math::clamp;
 
 const MUL_PI_2: f32 = 2.0 * PI;

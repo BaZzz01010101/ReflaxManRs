@@ -1,4 +1,3 @@
-#[cfg(test)]
 use std::io::Cursor;
 
 use super::{Color, Texture};

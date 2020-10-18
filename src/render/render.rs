@@ -1,12 +1,13 @@
-use crate::math::{Matrix33, Vector3};
-use crate::render::{Camera, Scene, Color, Skybox, Texture, Material, MaterialKind};
 use std::path::Path;
-
-use anyhow::{Result, Error, Context};
 use std::rc::Rc;
 
-use super::math::Rnd;
+use anyhow::Result;
+
+use crate::math::{Matrix33, Vector3};
+use crate::render::{Camera, Color, Material, MaterialKind, Scene, Skybox, Texture};
+
 use super::math::constants::FAST_RAND_MAX;
+use super::math::Rnd;
 
 thread_local! {
   pub static RND: Rc<Rnd> = Rc::new(Rnd::new());

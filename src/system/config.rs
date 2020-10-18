@@ -5,7 +5,7 @@ pub mod default {
 
   pub const STATIC_REFLECTIONS: u32 = 15;
   pub const MOTION_REFLECTIONS: u32 = 4;
-  pub const SCRNSHOT_REFECTIONS: u32 = 20;
+  pub const SCREENSHOT_REFLECTIONS: u32 = 20;
 
   pub const MIN_MOTION_FRAME_TIME: f32 = 0.010;
   pub const MAX_MOTION_FRAME_TIME: f32 = 0.020;

@@ -1,8 +1,8 @@
-use anyhow::{Result, Error, Context};
+use anyhow::Result;
 
-use super::math::Vector3;
-use super::math::constants::{VERY_SMALL_NUMBER, DELTA};
 use super::{Material, Trace};
+use super::math::constants::{DELTA, VERY_SMALL_NUMBER};
+use super::math::Vector3;
 
 #[derive(Debug, Default, Clone)]
 pub struct Sphere {

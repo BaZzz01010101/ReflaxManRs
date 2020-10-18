@@ -1,11 +1,10 @@
-use std::f32::consts::{PI, FRAC_PI_2};
-
-use anyhow::{Result, Error, Context};
-
-use super::math::{Vector3, Matrix33, clamp};
-use super::math::constants::{DELTA, VERY_SMALL_NUMBER};
-use super::{Skybox, SpotLight, Sphere, Triangle, Color, Texture, Material, MaterialKind, Trace};
 use std::rc::Rc;
+
+use anyhow::Result;
+
+use super::{Color, Material, MaterialKind, Skybox, Sphere, SpotLight, Texture, Trace, Triangle};
+use super::math::{clamp, Vector3};
+use super::math::constants::VERY_SMALL_NUMBER;
 
 #[derive(Default)]
 pub struct Scene {
@@ -114,8 +113,8 @@ impl Scene {
 
             // checking whether we are in the shadow of some scene object
             for obj in &self.trace_objects {
-              let obj_ptr = obj as *const Box<Trace>;
-              let hit_obj_ptr = hit_object as *const Box<Trace>;
+              let obj_ptr = obj as *const Box<dyn Trace>;
+              let hit_obj_ptr = hit_object as *const Box<dyn Trace>;
 
               // skip the object that was hit from shadow check
               if std::ptr::eq(obj_ptr, hit_obj_ptr) {

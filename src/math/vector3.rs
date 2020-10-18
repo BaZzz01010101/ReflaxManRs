@@ -1,13 +1,12 @@
-use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign, Div, DivAssign, Rem, RemAssign, Neg, DerefMut};
-
-use std::rc::Rc;
-use std::cmp::{PartialEq};
-use std::iter::{IntoIterator, FromIterator};
+use std::cmp::PartialEq;
 use std::fmt;
+use std::iter::{FromIterator, IntoIterator};
+use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Rem, RemAssign, Sub, SubAssign};
+use std::rc::Rc;
 
 use super::ApproxEq;
+use super::constants::{FAST_RAND_MAX, VERY_SMALL_NUMBER};
 use super::Rnd;
-use super::constants::{VERY_SMALL_NUMBER, FAST_RAND_MAX};
 
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct Vector3 {

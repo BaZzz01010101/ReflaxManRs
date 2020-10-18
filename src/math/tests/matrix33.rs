@@ -1,4 +1,3 @@
-#[cfg(test)]
 use super::{Vector3, Matrix33};
 
 #[test]

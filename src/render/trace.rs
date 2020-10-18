@@ -1,7 +1,7 @@
-use anyhow::{Result, Error, Context};
+use anyhow::Result;
 
-use super::math::Vector3;
 use super::Material;
+use super::math::Vector3;
 
 pub trait Trace {
   fn trace<'a>(
