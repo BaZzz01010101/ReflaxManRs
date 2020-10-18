@@ -28,7 +28,7 @@ pub struct Render {
   pub image_width: u32,
   pub image_height: u32,
   pub additive_counter: i32,
-  pub in_progress: bool,
+  pub is_complete: bool,
 }
 
 impl Render {
@@ -47,7 +47,7 @@ impl Render {
       image_width: 0,
       image_height: 0,
       additive_counter: 0,
-      in_progress: false,
+      is_complete: false,
     }
   }
 
@@ -125,7 +125,7 @@ impl Render {
     Ok(())
   }
 
-  pub fn resize_image(&mut self, width: u32, height: u32)  {
+  pub fn resize_image(&mut self, width: u32, height: u32) {
     assert!(width > 0, "Invalid argument");
     assert!(height > 0, "Invalid argument");
 
@@ -139,7 +139,7 @@ impl Render {
     self.image_width = width;
     self.image_height = height;
     self.additive_counter = 0;
-    self.in_progress = false;
+    self.is_complete = true;
     self.cur_x = 0;
     self.cur_y = 0;
   }
@@ -180,7 +180,7 @@ impl Render {
     self.max_reflections = reflections;
     self.samples = samples;
     self.is_additive = is_additive;
-    self.in_progress = true;
+    self.is_complete = false;
     self.cur_x = 0;
     self.cur_y = 0;
     self.camera_view = self.camera.view.clone();
@@ -195,7 +195,7 @@ impl Render {
 
   pub fn render(&mut self, pixels: u32) -> Result<bool> {
     assert!(pixels > 0, "Invalid argument");
-    assert!(self.in_progress, "Invalid state");
+    assert!(!self.is_complete, "Invalid state");
     assert!(self.cur_x < self.image_width, "Invalid state");
     assert!(self.cur_y < self.image_height, "Invalid state");
 
@@ -232,8 +232,8 @@ impl Render {
       } else {
         let mut fin_color: Color;
         let rnd = RND.with(|r| Rc::clone(r));
-        let rnd_x = if self.is_additive { rnd.fastrand() as f32 / FAST_RAND_MAX  as f32 } else { 0.0 };
-        let rnd_y = if self.is_additive { rnd.fastrand() as f32  / FAST_RAND_MAX  as f32 } else { 0.0 };
+        let rnd_x = if self.is_additive { rnd.fastrand() as f32 / FAST_RAND_MAX as f32 } else { 0.0 };
+        let rnd_y = if self.is_additive { rnd.fastrand() as f32 / FAST_RAND_MAX as f32 } else { 0.0 };
         fin_color = Color::new(0.0, 0.0, 0.0);
 
         for ssx in 0..self.samples {
@@ -268,12 +268,12 @@ impl Render {
       }
 
       if self.cur_y == self.image_height {
-        self.in_progress = false;
+        self.is_complete = true;
         break;
       }
     }
 
-    Ok(self.in_progress)
+    Ok(self.is_complete)
   }
 
   pub fn get_progress(&self) -> f32 {

@@ -89,7 +89,7 @@ impl Texture {
 
     match extension {
       "bmp" => {
-        let file = File::open(path)?;
+        let file = File::create(path)?;
         let stream = BufWriter::new(file);
 
         self.to_bmp(stream)
@@ -229,7 +229,18 @@ impl Texture {
     stream.write_u32::<LittleEndian>(info_header.clr_used)?;
     stream.write_u32::<LittleEndian>(info_header.clr_important)?;
 
-    stream.write_all(&self.color_buffer)?;
+    let width = self.width;
+    let height = self.height;
+
+    for y in 0..height {
+      for x in 0..width {
+        let idx = (x + y * width)  as usize * 3;
+        let mut rgb: [u8; 3] = self.color_buffer[idx..idx + 3].try_into().unwrap();
+        rgb.reverse();
+        stream.write_all(&rgb)?;
+      }
+    }
+
     stream.flush()?;
 
     Ok(())

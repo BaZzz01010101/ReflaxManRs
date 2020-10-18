@@ -5,6 +5,6 @@ mod keyboard;
 use crate::render;
 
 pub use self::pulse::Pulse;
-pub use self::config::Default;
-pub use self::keyboard::KEY_CODE;
+pub use self::config::default;
+pub use self::keyboard::KeyCode;
 
